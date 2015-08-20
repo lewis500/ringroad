@@ -1,0 +1,12 @@
+
+<md-button ng-click="vm.click()">Play/Pause</md-button><br/>
+<svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">
+  <g transform="translate(55,55)" class="g-main">
+    <circle r="50" class="road"></circle>
+    <g class="cars">
+      <g ng-repeat="car in vm.traffic.list track by car.id" ng-attr-transform="rotate({{car.loc}})" datum="::car" class="g-car">
+        <rect y="48.5" width="4" height="2" x="-2" class="car"></rect>
+      </g>
+    </g>
+  </g>
+</svg>

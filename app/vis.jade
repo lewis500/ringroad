@@ -1,0 +1,8 @@
+md-button(ng-click='vm.click()') Play/Pause
+br
+svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
+	g.g-main(transform='translate(55,55)')
+		circle.road(r='50')
+		g.cars
+			g.g-car(ng-repeat='car in vm.traffic.list track by car.id' ng-attr-transform='rotate({{car.loc}})' datum='::car')
+				rect.car(y='48.5' width='4' height='2' x='-2')

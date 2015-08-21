@@ -1,0 +1,8 @@
+
+<svg ng-attr-width="{{::vm.width + vm.m.l+vm.m.r}}" ng-attr-height="{{::vm.height + vm.m.t + vm.m.b}}" class="chart">
+  <g transform="translate(20,10)" class="g-main">
+    <rect ng-attr-width="{{::vm.width}}" ng-attr-height="{{::vm.height}}" class="bg"></rect>
+    <path ng-attr-d="{{vm.en()}}" class="en"></path>
+    <path ng-attr-d="{{vm.ex()}}" class="ex"></path>
+  </g>
+</svg>

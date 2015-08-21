@@ -6826,3 +6826,13 @@ rect.bg {
   stroke: #000;
   shape-rendering: crispEdges;
 }
+.chart path {
+  stroke-width: 1px;
+  fill: none;
+}
+.en {
+  stroke: #e91e63;
+}
+.ex {
+  stroke: #03a9f4;
+}

@@ -4,20 +4,51 @@
 
 svg{
 	width: 500px;
-	// width: 50%;
-	// height: 50%;
 }
 
 .car{
-	fill: @clr-light-blue-700;
+	// fill: @clr-light-blue-700;
 	stroke: none;
-	rx: 2px;
-	ry: 2px;
+	rx: 1px;
+	ry: 1px;
+	stroke: @clr-grey-900;
+	stroke-width: .35px;
+	opacity: .9;
 }
 
 .road{
 	fill: none;
-	stroke-width: 10px;
+	stroke-width: 5px;
 	stroke: @clr-grey-300;
-
 }
+
+.gradient circle{
+	stroke: none;
+	opacity: .5;
+}
+
+circle.dot{
+	fill: @clr-light-blue-500;
+	// stroke: white;
+	// stroke-width: .3;
+}
+rect.bg{
+	fill: @clr-grey-100;
+	// stroke: none;
+	
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+// .tick{
+// 	stroke-width: .5px;
+// }
+
+// .domain{
+// 	stroke-width: .5px;
+// }

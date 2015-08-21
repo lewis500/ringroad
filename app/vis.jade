@@ -3,6 +3,19 @@ br
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
 		circle.road(r='50')
+		g.gradient
+			circle(r='1' cy='45' ng-repeat='n in vm.pal track by $index' ng-attr-fill='{{::vm.colors(n)}}' ng-attr-transform='rotate({{::n}})')
 		g.cars
-			g.g-car(ng-repeat='car in vm.traffic.list track by car.id' ng-attr-transform='rotate({{car.loc}})' datum='::car')
-				rect.car(y='48.5' width='4' height='2' x='-2')
+			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' d3-der='{transform: vm.rotator(car) }' datum='::car' tran='vm.tran')
+				rect.car(y='49' width='3' height='2' x='-1.5' ng-attr-fill='{{::car.color}}')
+
+//- svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
+//- 	g.g-main(transform='translate(10,10)')
+//- 		rect.bg(width='100' height='100')
+//- 		circle.dot(ng-repeat='d in vm.traffic.memory track by $index' ng-attr-transform='translate({{vm.X(d.a)}},{{vm.Y(d.f)}})' r='1' ng-attr-opacity='{{.4+.4*$index/300}}')
+
+//- svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
+//- 	g.g-main(transform='translate(10,10)')
+//- 		rect.bg(width='100' height='100')
+		//- path(ng-attr-d='vm.')
+		//- circle.dot(ng-repeat='d in vm.traffic.memory track by $index' ng-attr-transform='translate({{vm.X(d.a)}},{{vm.Y(d.f)}})' r='1' ng-attr-opacity='{{.4+.4*$index/300}}')

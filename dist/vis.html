@@ -3,9 +3,12 @@
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">
   <g transform="translate(55,55)" class="g-main">
     <circle r="50" class="road"></circle>
+    <g class="gradient">
+      <circle r="1" cy="45" ng-repeat="n in vm.pal track by $index" ng-attr-fill="{{::vm.colors(n)}}" ng-attr-transform="rotate({{::n}})"></circle>
+    </g>
     <g class="cars">
-      <g ng-repeat="car in vm.traffic.list track by car.id" ng-attr-transform="rotate({{car.loc}})" datum="::car" class="g-car">
-        <rect y="48.5" width="4" height="2" x="-2" class="car"></rect>
+      <g ng-repeat="car in vm.traffic.traveling track by car.id" d3-der="{transform: vm.rotator(car) }" datum="::car" tran="vm.tran" class="g-car">
+        <rect y="49" width="3" height="2" x="-1.5" ng-attr-fill="{{::car.color}}" class="car"></rect>
       </g>
     </g>
   </g>

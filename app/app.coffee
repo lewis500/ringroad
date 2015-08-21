@@ -3,114 +3,179 @@ d3 = require 'd3'
 _ = require 'lodash'
 
 S = 
-	num_cars: 50
+	num_cars: 200
 	time: 0
-	space: 10
-	vel: 20
-
+	space: 5
+	pace: .1
+	stopping_time: 4
+	distance: 45
+	beta: .5
+	gamma: 2
+	day: 0
+	advance: ->
+		@time++
+	reset_time: ->
+		@time = 0
 
 class Traffic
 	constructor: ->
-		@reset()
 
-	reset:->
-		@list = []
+	reset:(waiting)->
+		@waiting = waiting.splice 0
+		@traveling = []
+		@memory = []
+		@short_memory = []
 
-	enter_car: (car)->
-		# if @list.length > 1
-		# 	gaps = []
-		# 	@list.forEach (car)->
-		# 		g = car.get_gap car.next.loc
-		# 		# if g >2*S.space
-		# 		gaps.push 
-		# 			gap: g
-		# 			loc: car.loc
-		# 	which = _.sample gaps
-		# 	loc = which.loc + which.gap*.5
-		# else 
-		loc  = _.random 0, 360, true
+	done: ->
+		@waiting.length == 0 and @traveling.length == 0
+
+	choice_stage: ->
+
+	receive: (car)->
+		loc = _.random 0,360
+		g0 = 0
+		_.forEach @traveling, (c)->
+			g = c.get_gap()
+			if g >= S.space and g > g0
+				loc = (c.loc + g/2)%360
+				g0 = g
 		car.enter loc
-		@list.push car
+		@traveling.push car
 		@order_cars()
 
-	exit_car:(car) ->
-		i = @list.indexOf car
-		@list.splice i , 1
-
-	update: (dt)->
-		@list.forEach (car)=>
-			car.move dt
-			if car.exited then @exit_car car
+	update: ->
+		@waiting.forEach (car)=>
+			if car.entering S.time
+				_.remove @waiting, car
+				@receive car
+		@traveling.forEach (car)=>
+			car.move()
+			if car.exited then _.remove @traveling, car
 		@order_cars()
+
+	remember: (d)->
+		@short_memory.push d
+		if @short_memory.length >= 3
+			res = 
+				f: 0
+				v: 0
+				a: 0
+			@short_memory.forEach (d)->
+				res.f += d.f/3
+				res.v += d.v/3
+				res.a += d.a/3
+			@short_memory = []
+
+			@memory.push res
+			if @memory.length > 80 then @memory.shift()
 
 	order_cars: ->
-		@list
-			.sort (a,b)->
-					a.loc - b.loc
-		if @list.length > 1
-			@list.forEach (car,i,k)->
-				car.set_next k[(i+1)%k.length]
-				car.set_prev k[(if (i==0) then (k.length-1) else (i-1))]
+		@traveling.sort (a,b)-> a.loc - b.loc
+		v = 0
+		l = @traveling.length
+		if l > 1
+			@traveling.forEach (car,i,k)->
+				if !car.stopped then v++
+				car.set_next k[(i+1)%l]
+				car.set_prev k[(if (i==0) then (l-1) else (i-1))]
 
 class Car
 	constructor:(@distance)->
 		@id = _.uniqueId()
-		@time_entry = _.random 1, 30, true
+		@t_en = _.random 1, 225
 		@exited = false
 		@next = 
 			loc: 361
 
+	entering: (t)-> @t_en < t
+
 	# setters
 	set_next: (@next)->
 	set_prev: (@prev)->
+	# set_color: (@color)->
 	exit: ->
-		console.log 'exiting'
-		@time_exit = S.time
+		@t_ex = S.time
 		@exited = true
 
 	enter:(@loc)->
-		@time_queue = @time_exit - @time_enter
-		@destination =( @loc + @distance )%360
+		@stopped = 0
+		@destination = ( @loc + @distance )%360
+		@color = colors @destination
 
-	get_gap:(loc)->
-		gap = loc - @loc
+	get_gap:->
+		gap = @next.loc - @loc
 		if gap < 0 then (gap + 360) else gap
 
-	move: (dt)->
-		if @get_gap(@next.loc) >= S.space
-			@loc+=(S.vel*dt/1000)%360
-			if @get_gap( @destination) <= 0 then @exit()
+	eval_costs: ->
+		sd = S.wish_time
+		@cost = (@t_ex - @t_en) + Math.max 
+
+	move: ->
+		if @stopped > 0
+			@stopped--
+		else
+			if @get_gap() >= S.space
+				@loc = (@loc + 1)%360
+				if (@loc == @destination) then @exit()
+			else
+				@stopped = S.stopping_time
+
+colors = d3.scale.linear()
+		.domain [0, 60, 120, 180, 240]
+		.range [
+			'#F44336', #red
+			'#E91E63', #pink
+			'#2196F3', #blue
+			'#00BCD4', #cyan
+			'#4CAF50', #green
+			]
 
 class Ctrl
 	constructor:(@scope,el)->
-		@paused = true
-		@cars = _.range 0, S.num_cars
-			.map (n)->
-				new Car 50
+		_.assign this,
+			paused: true
+			physics: true
+			colors: colors
+			traffic: new Traffic
+			pal: _.range 0,360,20
+		@cars = _.range S.num_cars
+			.map (n)->	new Car S.distance
+		@day_start()
 
-		@to_enter = @cars.slice 0
+	rotator: (car)-> "rotate(#{car.loc})"
+	tran: (tran)-> tran.transition().duration S.pace
 
-		@traffic = new Traffic
+	day_start: ->
+		S.day++
+		S.reset_time()
+		@physics = true #physics stage happening
+		@traffic.reset @cars
+		@tick()
+
+	day_end: ->
+		@physics = false #physics stage not happening
+		@traffic.choice_stage()
 
 	click: -> if @paused then @play() else @pause()
-	pause:-> @paused = true
+	pause: -> @paused = true
+	tick: ->
+		if !@physics then return
+		d3.timer =>
+				if @traffic.done()
+					@day_end()
+					true
+				S.advance()
+				@traffic.update()
+				@scope.$evalAsync()
+				if !@paused then @tick()
+				true
+			, S.pace*1000
+
 	play: ->
 		@pause()
 		d3.timer.flush()
 		@paused = false
-		last = 0
-		d3.timer (elapsed)=>
-			dt = elapsed - last
-			S.time+= dt/1000
-			@to_enter.forEach (car)=>
-				if car.time_entry < S.time
-					@to_enter.splice @to_enter.indexOf(car),1
-					@traffic.enter_car car
-			@traffic.update dt
-			@scope.$evalAsync()
-			last = elapsed
-			@paused
-	# make a evalasync that only fires every third time
+		@tick()
 
 visDer = ->
 	directive = 
@@ -122,3 +187,4 @@ visDer = ->
 angular.module 'mainApp' , [require 'angular-material']
 	.directive 'visDer', visDer
 	.directive 'datum', require './directives/datum'
+	.directive 'd3Der', require './directives/d3Der'

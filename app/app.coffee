@@ -11,9 +11,8 @@ class Ctrl
 			colors: S.colors
 			traffic: new Traffic
 			pal: _.range 0,360,20
-		@cars = _.range( S.num_cars)
-				.map (n)-> 
-					new Car S.distance
+			cars: _.range S.num_cars
+					.map (n)-> 	new Car S.distance
 		@day_start()
 
 	rotator: (car)-> "rotate(#{car.loc})"
@@ -24,14 +23,6 @@ class Ctrl
 		@physics = true #physics stage happening
 		@traffic.reset @cars
 		_.invoke @cars, 'assign_error'
-		# @cum = []
-		# ex = d3.mean @cars, (car)->
-		# 	car.t_ex
-		# tar = d3.mean @cars, (car)->
-		# 	car.target
-		# tt = d3.mean @cars, (car)->
-		# 	car.tt
-		# console.log "exit #{ex}, entry #{tar}, travel #{tt}"
 		@tick()
 
 	day_end: ->
@@ -40,23 +31,22 @@ class Ctrl
 		_.sample @cars, 25
 			.forEach (d)-> d.choose()
 
-		setTimeout  =>
-			@day_start()
+		setTimeout => @day_start()
 
 	click:(val) -> if !val then @play()
 	pause: -> @paused = true
 	tick: ->
-		if !@physics then return
-		d3.timer =>
-				if @traffic.done()
-					@day_end()
+		if @physics
+			d3.timer =>
+					if @traffic.done()
+						@day_end()
+						true
+					S.advance()
+					@traffic.update()
+					@scope.$evalAsync()
+					if !@paused then @tick()
 					true
-				S.advance()
-				@traffic.update()
-				@scope.$evalAsync()
-				if !@paused then @tick()
-				true
-			, S.pace*1000
+				, S.pace*1000
 
 	play: ->
 		@pause()

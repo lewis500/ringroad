@@ -1,5 +1,5 @@
 md-switch(ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
-br
+//- div()
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
 		circle.road(r='50')
@@ -9,7 +9,6 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' d3-der='{transform: vm.rotator(car) }' datum='::car' )
 				rect.car(y='49' width='3' height='2' x='-1.5' ng-attr-fill='{{::car.color}}')
 
-br
 cum-chart(cum='vm.traffic.cum')
 //- svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 //- 	g.g-main(transform='translate(10,10)')

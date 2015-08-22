@@ -10,9 +10,9 @@ class Ctrl
 			height: 300
 			m: 
 				t: 10
-				l: 20
+				l: 30
 				r: 10
-				b: 20
+				b: 35
 
 		@hor = d3.scale.linear()
 				.domain [0,S.rush_length]
@@ -29,6 +29,15 @@ class Ctrl
 		@lineEx = d3.svg.line()
 			.x (d)=>@hor d.time
 			.y (d)=>@ver d.cumEx
+
+		@horAxis = d3.svg.axis()
+			.scale @hor
+			.orient 'bottom'
+
+		@verAxis = d3.svg.axis()
+			.scale @ver
+			.orient 'left'
+
 
 	ex: ->
 		@lineEx @cum

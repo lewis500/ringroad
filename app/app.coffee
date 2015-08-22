@@ -12,7 +12,7 @@ class Ctrl
 			traffic: new Traffic
 			pal: _.range 0,360,20
 			cars: _.range S.num_cars
-					.map (n)-> 	new Car S.distance
+					.map (n)-> 	new Car( S.distance + _.random -8,5)
 		@day_start()
 
 	rotator: (car)-> "rotate(#{car.loc})"
@@ -66,3 +66,5 @@ angular.module 'mainApp' , [require 'angular-material']
 	.directive 'datum', require './directives/datum'
 	.directive 'd3Der', require './directives/d3Der'
 	.directive 'cumChart', require './cumChart'
+	.directive 'horAxis', require './directives/xAxis'
+	.directive 'verAxis', require './directives/yAxis'

@@ -57,11 +57,11 @@ class Car
 		_.assign this,
 			id: _.uniqueId()
 			cost0: Infinity 
-			target: _.random 2, S.rush_length - S.distance - 10
+			target: _.random 4,(S.rush_length - S.distance - 10)
 			exited: false
 
 	assign_error:-> 
-		@t_en = @target + _.random -2,2
+		@t_en = Math.max 0,(@target + _.random -2,2)
 
 	# setters
 	set_next: (@next)->

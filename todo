@@ -1,11 +1,14 @@
 TODO
+figure out why vehicles are stopping
+make a car directive that pops cars out and in and changes their colors when they stop
 put on github
 tolls
-axes for cumchart
 go up to 300 cars
 make the sample a percentage
 plot the mfd
+dont do the signals objects for now. just have some kind of universal thing.
 
+get rid of the car directive and just use nganimate
 
 
 RESEARCH

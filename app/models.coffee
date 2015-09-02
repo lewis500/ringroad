@@ -1,14 +1,55 @@
 S = require './settings'
 _ = require 'lodash'
 
+class Signal
+	constructor: (@loc)->
+		@green = true
+		@id = _.uniqueId 'signal-'
+		@reset()
+
+	reset: ->
+		[@count, @green] = [0, true]
+
+	update: ->
+		@count++
+		if @count >= S.phase
+			@reset()
+			return
+		if @count >= S.green*S.phase
+			@green = false
+
 class Traffic
 	constructor: ->
+		@signals = _.range 0,360, 360/S.num_signals
+				.map (f)-> new Signal Math.floor f
 
 	reset:(waiting)->
-		[@traveling, @cum, @cumEn, @cumEx,@waiting] = [[],[], 0, 0, _.clone(waiting)]
+		_.assign this,
+			traveling: []
+			cum: []
+			memory: []
+			cumEn: 0
+			cumEx: 0
+			waiting: _.clone( waiting)
+
+		@signals.forEach (s)->
+			s.reset()
 
 	done: ->
 		(@waiting.length+@traveling.length)==0
+
+	remember: ->
+		mem = 
+			n: @traveling.length
+			v: 0
+			f: 0
+		@traveling.forEach (d)->
+			if !d.stopped
+				mem.f++
+				mem.v+=(1/mem.n)
+		@memory.push mem
+		# if @memory.length > 30
+		# 	@memory.shift()
 
 	log: ->
 		@cum.push
@@ -24,9 +65,8 @@ class Traffic
 		_.forEach @traveling, (c)->
 			g = c.get_gap()
 			if _.gte(g, S.space) and _.gt(g,g0)
-				loc = (c.loc + g/2)%360
+				loc = Math.floor(c.loc + g/2)%360
 				g0 = g
-		loc = (loc + _.random -1,1) %360
 		car.enter loc
 		@traveling.push car
 		@order_cars()
@@ -36,13 +76,20 @@ class Traffic
 		_.remove @traveling, car
 
 	update: ->
+		reds = []
+		@signals.forEach (s)->
+			s.update()
+			if !s.green
+				reds.push s.loc
+
 		@waiting.forEach (car)=>
 			if _.lt car.t_en,S.time then @receive car
 		@traveling.forEach (car)=>
-			car.move()
+			car.move reds
 			if car.exited then @remove car
 
 		@log()
+		if (S.time%S.frequency==0) then @remember()
 
 		@order_cars()
 
@@ -51,6 +98,8 @@ class Traffic
 			@traveling.sort (a,b)-> a.loc - b.loc
 			@traveling.forEach (car,i,k)->
 				car.set_next k[(i+1)%l]
+		if l == 1
+			@traveling[0].set_next null
 
 class Car
 	constructor:(@distance)->
@@ -65,7 +114,6 @@ class Car
 
 	# setters
 	set_next: (@next)->
-	set_destination: (@destination)->
 
 	get_gap:->
 		if !@next then return 180
@@ -85,18 +133,23 @@ class Car
 		if _.lte @cost,@cost0 then [@cost0,@target] = [@cost, @t_en]
 
 	enter:(@loc)->
-		@set_destination (@loc + @distance)%360
+		@destination = Math.floor (@loc + @distance)%360
+		# @destination = Math.floor @destination
 		[@cost0, @exited, @stopped, @color] = [@cost,false,0, S.colors(@destination)]
 
-	move: ->
+	move: (reds)->
 		if @stopped > 0 then @stopped--
 		else
-			if _.gte @get_gap(),S.space
-				if (@loc = _.add(@loc,1)%360) == @destination
-					@exit()
-			else
-				@stopped = S.stopping_time
+			if @loc == @destination
+				@exit()
+			else 
+				next_loc = (@loc + 1)%360
+				if (@get_gap() >= S.space) and (next_loc not in reds)
+					@loc = next_loc
+				else
+					@stopped = S.stopping_time
 
 module.exports = 
 	Car: Car
 	Traffic: Traffic
+	Signal: Signal

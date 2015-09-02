@@ -3,19 +3,13 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
 		circle.road(r='50')
 		g.gradient
-			circle(r='1' cy='45' ng-repeat='n in vm.pal track by $index' ng-attr-fill='{{::vm.colors(n)}}' ng-attr-transform='rotate({{::n}})')
+			circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::vm.colors(n)}}' ng-attr-transform='rotate({{::n}})')
 		g.cars
-			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' d3-der='{transform: vm.rotator(car) }' datum='::car' )
-				rect.car(y='49' width='3' height='2' x='-1.5' ng-attr-fill='{{::car.color}}')
+			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' d3-der='{transform: vm.rotator(car) }')
+				rect.car( width='3' height='2' x='-1.5' ng-attr-fill='{{::car.color}}')
+		g.signals
+			g.g-signal(ng-repeat='s in vm.traffic.signals track by s.id' d3-der='{transform: vm.rotator(s) }' )
+				rect.signal(width='2' height='5'  x='-2' ng-attr-fill='{{vm.sig_col(s.green)}}')
 
 cum-chart(cum='vm.traffic.cum')
-//- svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
-//- 	g.g-main(transform='translate(10,10)')
-//- 		rect.bg(width='100' height='100')
-//- 		circle.dot(ng-repeat='d in vm.traffic.memory track by $index' ng-attr-transform='translate({{vm.X(d.a)}},{{vm.Y(d.f)}})' r='1' ng-attr-opacity='{{.4+.4*$index/300}}')
-
-//- svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
-//- 	g.g-main(transform='translate(10,10)')
-//- 		rect.bg(width='100' height='100')
-		//- path(ng-attr-d='vm.')
-		//- circle.dot(ng-repeat='d in vm.traffic.memory track by $index' ng-attr-transform='translate({{vm.X(d.a)}},{{vm.Y(d.f)}})' r='1' ng-attr-opacity='{{.4+.4*$index/300}}')
+mfd-chart(memory='vm.traffic.memory')

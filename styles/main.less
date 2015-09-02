@@ -12,12 +12,23 @@ svg.vis, cum-chart{
 
 .car{
 	// fill: @clr-light-blue-700;
-	stroke: none;
-	rx: 1px;
-	ry: 1px;
+	rx: .2px;
+	ry: .25px;
 	stroke: @clr-grey-900;
-	stroke-width: .35px;
-	opacity: .9;
+	stroke-width: .2px;
+	// opacity: .9;
+}
+
+.memory{
+	fill: @clr-purple-500;
+	opacity: 0.8;
+}
+
+.signal{
+	stroke: none;
+	rx: .2px;
+	ry: .2px;
+	opacity: .7;
 }
 
 .road{
@@ -27,8 +38,9 @@ svg.vis, cum-chart{
 }
 
 .gradient circle{
-	stroke: none;
-	opacity: .5;
+	stroke: @clr-grey-900;
+	stroke-width: .2px;
+	// opacity: .5;
 }
 
 circle.dot{
@@ -39,7 +51,6 @@ circle.dot{
 rect.bg{
 	fill: @clr-grey-100;
 	// stroke: none;
-	
 }
 
 .axis path,
@@ -58,13 +69,11 @@ rect.bg{
 	stroke: @clr-pink-500;
 }
 
+.flow{
+	stroke: @clr-green-500;
+}
+
 .ex {
 	stroke: @clr-light-blue-500;
 }
-// .tick{
-// 	stroke-width: .5px;
-// }
 
-// .domain{
-// 	stroke-width: .5px;
-// }

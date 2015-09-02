@@ -6794,16 +6794,28 @@ md-tooltip {
   md-whiteframe {
     border: 1px solid #fff; } }
 
-svg {
+svg.vis {
   width: 500px;
 }
+svg.vis,
+cum-chart {
+  display: inline block;
+}
 .car {
-  stroke: none;
-  rx: 1px;
-  ry: 1px;
+  rx: .2px;
+  ry: .25px;
   stroke: #212121;
-  stroke-width: .35px;
-  opacity: .9;
+  stroke-width: .2px;
+}
+.memory {
+  fill: #9c27b0;
+  opacity: 0.8;
+}
+.signal {
+  stroke: none;
+  rx: .2px;
+  ry: .2px;
+  opacity: .7;
 }
 .road {
   fill: none;
@@ -6811,8 +6823,8 @@ svg {
   stroke: #e0e0e0;
 }
 .gradient circle {
-  stroke: none;
-  opacity: .5;
+  stroke: #212121;
+  stroke-width: .2px;
 }
 circle.dot {
   fill: #03a9f4;
@@ -6832,6 +6844,9 @@ rect.bg {
 }
 .en {
   stroke: #e91e63;
+}
+.flow {
+  stroke: #4caf50;
 }
 .ex {
   stroke: #03a9f4;

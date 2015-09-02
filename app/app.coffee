@@ -2,7 +2,7 @@ angular = require 'angular'
 d3 = require 'd3'
 _ = require 'lodash'
 S = require './settings'
-{Car,Traffic} = require './models'
+{Car,Traffic,Signal} = require './models'
 
 class Ctrl
 	constructor:(@scope,el)->
@@ -10,12 +10,13 @@ class Ctrl
 			paused: true
 			colors: S.colors
 			traffic: new Traffic
-			pal: _.range 0,360,20
+			pal: _.range 0,360,10
 			cars: _.range S.num_cars
 					.map (n)-> 	new Car( S.distance + _.random -8,5)
 		@day_start()
 
-	rotator: (car)-> "rotate(#{car.loc})"
+	rotator: (car)-> "rotate(#{car.loc}) translate(0,49)"
+
 	tran: (tran)-> tran.transition().duration S.pace
 
 	day_start: ->
@@ -33,7 +34,7 @@ class Ctrl
 
 		setTimeout => @day_start()
 
-	click:(val) -> if !val then @play()
+	click: (val) -> if !val then @play()
 	pause: -> @paused = true
 	tick: ->
 		if @physics
@@ -48,6 +49,8 @@ class Ctrl
 					true
 				, S.pace*1000
 
+	sig_col:(green) -> if green then '#4CAF50' else '#F44336'
+
 	play: ->
 		@pause()
 		d3.timer.flush()
@@ -61,10 +64,38 @@ visDer = ->
 		templateUrl: './dist/vis.html'
 		controller: ['$scope', '$element', Ctrl]
 
-angular.module 'mainApp' , [require 'angular-material']
+leaver = ->
+		animate = 
+			leave: (el)->
+				d3.select el[0]
+					.select 'rect'
+					.transition()
+					.duration 50
+					.ease 'cubic'
+					.attr 'transform','scale(1.2,1)'
+					.transition()
+					.duration 150
+					.ease 'cubic'
+					.attr 'transform','scale(0,1)'
+			enter: (el)->
+				d3.select el[0]
+					.select 'rect'
+					.attr 'transform','scale(0,.5)'
+					.transition()
+					.duration 60
+					.ease 'cubic'
+					.attr 'transform','scale(1.2,1)'
+					.transition()
+					.duration 150
+					.ease 'cubic'
+					.attr 'transform','scale(1)'
+
+angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
 	.directive 'datum', require './directives/datum'
 	.directive 'd3Der', require './directives/d3Der'
 	.directive 'cumChart', require './cumChart'
+	.directive 'mfdChart', require './mfd'
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
+	.animation '.g-car', leaver

@@ -4,13 +4,19 @@
   <g transform="translate(55,55)" class="g-main">
     <circle r="50" class="road"></circle>
     <g class="gradient">
-      <circle r="1" cy="45" ng-repeat="n in vm.pal track by $index" ng-attr-fill="{{::vm.colors(n)}}" ng-attr-transform="rotate({{::n}})"></circle>
+      <circle r="1" cy="45" ng-repeat="n in vm.pal" ng-attr-fill="{{::vm.colors(n)}}" ng-attr-transform="rotate({{::n}})"></circle>
     </g>
     <g class="cars">
-      <g ng-repeat="car in vm.traffic.traveling track by car.id" d3-der="{transform: vm.rotator(car) }" datum="::car" class="g-car">
-        <rect y="49" width="3" height="2" x="-1.5" ng-attr-fill="{{::car.color}}" class="car"></rect>
+      <g ng-repeat="car in vm.traffic.traveling track by car.id" d3-der="{transform: vm.rotator(car) }" class="g-car">
+        <rect width="3" height="2" x="-1.5" ng-attr-fill="{{::car.color}}" class="car"></rect>
+      </g>
+    </g>
+    <g class="signals">
+      <g ng-repeat="s in vm.traffic.signals track by s.id" d3-der="{transform: vm.rotator(s) }" class="g-signal">
+        <rect width="2" height="5" x="-2" ng-attr-fill="{{vm.sig_col(s.green)}}" class="signal"></rect>
       </g>
     </g>
   </g>
 </svg>
 <cum-chart cum="vm.traffic.cum"></cum-chart>
+<mfd-chart memory="vm.traffic.memory"></mfd-chart>

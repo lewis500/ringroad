@@ -92,7 +92,8 @@ class Car
 		if @stopped > 0 then @stopped--
 		else
 			if _.gte @get_gap(),S.space
-				if (@loc = _.add(@loc,1)%360) == @destination then @exit()
+				if (@loc = _.add(@loc,1)%360) == @destination
+					@exit()
 			else
 				@stopped = S.stopping_time
 

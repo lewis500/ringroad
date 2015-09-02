@@ -20,8 +20,7 @@ class Signal
 
 class Traffic
 	constructor: ->
-		@signals = _.range 0,360, 360/S.num_signals
-				.map (f)-> new Signal Math.floor f
+		@change_signals S.num_signals
 
 	reset:(waiting)->
 		_.assign this,
@@ -35,6 +34,10 @@ class Traffic
 		@signals.forEach (s)->
 			s.reset()
 
+	change_signals: (n)->
+		@signals = _.range 0,S.rl, S.rl/S.num_signals
+				.map (f)-> new Signal Math.floor f
+
 	done: ->
 		(@waiting.length+@traveling.length)==0
 
@@ -44,12 +47,11 @@ class Traffic
 			v: 0
 			f: 0
 		@traveling.forEach (d)->
-			if !d.stopped
+			if d.stopped == 0
 				mem.f++
 				mem.v+=(1/mem.n)
 		@memory.push mem
-		# if @memory.length > 30
-		# 	@memory.shift()
+
 
 	log: ->
 		@cum.push
@@ -58,18 +60,20 @@ class Traffic
 			cumEx: @cumEx
 
 	receive: (car)->
-		_.remove @waiting, car
 		@cumEn++
-		loc = _.random 0,359
+		loc = _.random 0,S.rl
 		g0 = 0
 		_.forEach @traveling, (c)->
 			g = c.get_gap()
-			if _.gte(g, S.space) and _.gt(g,g0)
-				loc = Math.floor(c.loc + g/2)%360
+			if g >= g0
+				loc = Math.floor(c.loc + g/2)%S.rl
 				g0 = g
-		car.enter loc
-		@traveling.push car
-		@order_cars()
+
+		if (g0 > 0 and @traveling.length>0) or (@traveling.length==0)
+			_.remove @waiting, car
+			car.enter loc
+			@traveling.push car
+			@order_cars()
 
 	remove: (car)->
 		@cumEx++
@@ -106,7 +110,7 @@ class Car
 		_.assign this,
 			id: _.uniqueId()
 			cost0: Infinity 
-			target: _.random 4,(S.rush_length - S.distance - 10)
+			target: _.random 4,(S.rush_length - S.distance-35)
 			exited: false
 
 	assign_error:-> 
@@ -116,9 +120,9 @@ class Car
 	set_next: (@next)->
 
 	get_gap:->
-		if !@next then return 180
+		if !@next then return Math.floor S.rl/2
 		gap = @next.loc - @loc
-		if _.lte gap,0 then _.add gap,360 else gap
+		if _.lte gap,0 then (gap+S.rl) else gap
 
 	exit: ->
 		[@next, @t_ex, @exited] = [undefined, S.time, true]
@@ -133,7 +137,7 @@ class Car
 		if _.lte @cost,@cost0 then [@cost0,@target] = [@cost, @t_en]
 
 	enter:(@loc)->
-		@destination = Math.floor (@loc + @distance)%360
+		@destination = Math.floor (@loc + @distance)%S.rl
 		# @destination = Math.floor @destination
 		[@cost0, @exited, @stopped, @color] = [@cost,false,0, S.colors(@destination)]
 
@@ -143,7 +147,7 @@ class Car
 			if @loc == @destination
 				@exit()
 			else 
-				next_loc = (@loc + 1)%360
+				next_loc = (@loc + 1)%S.rl
 				if (@get_gap() >= S.space) and (next_loc not in reds)
 					@loc = next_loc
 				else

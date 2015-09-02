@@ -1,15 +1,36 @@
-md-switch(ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
+div(layout='row')
+	md-switch(flex='20' ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
+	div(layout='column' flex)
+		div(layout flex)
+			div(flex="10" layout layout-align="center center")
+				span(class="md-body-1") #signals
+			md-slider(flex ng-model='S.num_signals' ng-change='vm.traffic.change_signals(S.num_signals)' step='1' min='4' max='25') 
+			div(flex='20' layout layout-align="center center" )
+				input(ng-model='S.num_signals' type='number' min='4' max='25' step='1')
+		div(layout flex)
+			div(flex="10" layout layout-align="center center")
+				span(class="md-body-1") phase length
+			md-slider(flex ng-model='S.phase' min='5' max='75' step='1') 
+			div(flex='20' layout layout-align="center center" )
+				input(ng-model='S.phase' type='number' min='5' max='75' step='1')
+		div(layout flex)
+			div(flex="10" layout layout-align="center center")
+				span(class="md-body-1") %green
+			md-slider(flex ng-model='S.green' min='.1' max='1' step='0.1') 
+			div(flex='20' layout layout-align="center center" )
+				input(ng-model='S.green' type='number' min='.1' max='1' step='0.1')
+
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
 		circle.road(r='50')
 		g.gradient
-			circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::vm.colors(n)}}' ng-attr-transform='rotate({{::n}})')
+			circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::S.colors(n)}}' ng-attr-transform='rotate({{::S.scale(n)}})')
 		g.cars
 			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' d3-der='{transform: vm.rotator(car) }')
-				rect.car( width='3' height='2' x='-1.5' ng-attr-fill='{{::car.color}}')
+				rect.car( width='1.5' height='1' x='-.75' ng-attr-fill='{{::car.color}}')
 		g.signals
 			g.g-signal(ng-repeat='s in vm.traffic.signals track by s.id' d3-der='{transform: vm.rotator(s) }' )
-				rect.signal(width='2' height='5'  x='-2' ng-attr-fill='{{vm.sig_col(s.green)}}')
+				rect.signal(width='1' height='5'  x='-1' ng-attr-fill='{{vm.sig_col(s.green)}}')
 
 cum-chart(cum='vm.traffic.cum')
 mfd-chart(memory='vm.traffic.memory')

@@ -1,15 +1,14 @@
+TODAY
+-display what day it is
+-use a scale to place cars instead of just loc
+-add zoom to the two plots
+
+
 TODO
-figure out why vehicles are stopping
-make a car directive that pops cars out and in and changes their colors when they stop
-put on github
 tolls
 go up to 300 cars
-make the sample a percentage
-plot the mfd
-dont do the signals objects for now. just have some kind of universal thing.
 
-get rid of the car directive and just use nganimate
-
+use canvas to draw paths
 
 RESEARCH
 - add signals so it becomes a trapezoid. its the simplest spatial structure you can simulate that mimics what happens in real life

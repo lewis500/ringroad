@@ -3,7 +3,7 @@
 
 
 svg.vis{
-	width: 500px;
+	width: 450px;
 }
 
 svg.vis, cum-chart{
@@ -15,8 +15,12 @@ svg.vis, cum-chart{
 	rx: .2px;
 	ry: .25px;
 	stroke: @clr-grey-900;
-	stroke-width: .2px;
+	stroke-width: .3px;
 	// opacity: .9;
+}
+
+input[type="number"] {
+  text-align: center; 
 }
 
 .memory{
@@ -25,10 +29,11 @@ svg.vis, cum-chart{
 }
 
 .signal{
-	stroke: none;
+	stroke: @clr-grey-800;
+	stroke-width: .3px;
 	rx: .2px;
 	ry: .2px;
-	opacity: .7;
+	fill-opacity: .7;
 }
 
 .road{

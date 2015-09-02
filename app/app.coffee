@@ -8,16 +8,17 @@ class Ctrl
 	constructor:(@scope,el)->
 		_.assign this,
 			paused: true
-			colors: S.colors
 			traffic: new Traffic
-			pal: _.range 0,360,10
+			pal: _.range 0,S.rl,S.rl/25
 			cars: _.range S.num_cars
-					.map (n)-> 	new Car( S.distance + _.random -8,5)
+					.map (n)-> 	new Car( S.distance + _.random( -8,5) )
+		@scope.S = S
 		@day_start()
 
-	rotator: (car)-> "rotate(#{car.loc}) translate(0,49)"
+	rotator: (car)-> "rotate(#{S.scale(car.loc)}) translate(0,50)"
 
-	tran: (tran)-> tran.transition().duration S.pace
+	change_signals: (n)->
+		@traffic.change_signals()
 
 	day_start: ->
 		S.reset_time()
@@ -47,7 +48,7 @@ class Ctrl
 					@scope.$evalAsync()
 					if !@paused then @tick()
 					true
-				, S.pace*1000
+				, S.pace
 
 	sig_col:(green) -> if green then '#4CAF50' else '#F44336'
 
@@ -73,6 +74,7 @@ leaver = ->
 					.duration 50
 					.ease 'cubic'
 					.attr 'transform','scale(1.2,1)'
+					.attr 'fill','#eee'
 					.transition()
 					.duration 150
 					.ease 'cubic'

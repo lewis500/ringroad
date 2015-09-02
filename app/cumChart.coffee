@@ -9,8 +9,8 @@ class Ctrl
 			height: 300
 			m: 
 				t: 10
-				l: 30
-				r: 10
+				l: 40
+				r: 15
 				b: 35
 
 		@hor = d3.scale.linear()
@@ -32,6 +32,8 @@ class Ctrl
 		@horAxis = d3.svg.axis()
 			.scale @hor
 			.orient 'bottom'
+			.ticks 8
+
 
 		@verAxis = d3.svg.axis()
 			.scale @ver

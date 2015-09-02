@@ -1,19 +1,44 @@
 
-<md-switch ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
+<div layout="row">
+  <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
+  <div layout="column" flex="flex">
+    <div layout="layout" flex="flex">
+      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">#signals</span></div>
+      <md-slider flex="flex" ng-model="S.num_signals" ng-change="vm.traffic.change_signals(S.num_signals)" step="1" min="4" max="25"> </md-slider>
+      <div flex="20" layout="layout" layout-align="center center">
+        <input ng-model="S.num_signals" type="number" min="4" max="25" step="1"/>
+      </div>
+    </div>
+    <div layout="layout" flex="flex">
+      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">phase length</span></div>
+      <md-slider flex="flex" ng-model="S.phase" min="5" max="75" step="1"> </md-slider>
+      <div flex="20" layout="layout" layout-align="center center">
+        <input ng-model="S.phase" type="number" min="5" max="75" step="1"/>
+      </div>
+    </div>
+    <div layout="layout" flex="flex">
+      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">%green</span></div>
+      <md-slider flex="flex" ng-model="S.green" min=".1" max="1" step="0.1"> </md-slider>
+      <div flex="20" layout="layout" layout-align="center center">
+        <input ng-model="S.green" type="number" min=".1" max="1" step="0.1"/>
+      </div>
+    </div>
+  </div>
+</div>
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">
   <g transform="translate(55,55)" class="g-main">
     <circle r="50" class="road"></circle>
     <g class="gradient">
-      <circle r="1" cy="45" ng-repeat="n in vm.pal" ng-attr-fill="{{::vm.colors(n)}}" ng-attr-transform="rotate({{::n}})"></circle>
+      <circle r="1" cy="45" ng-repeat="n in vm.pal" ng-attr-fill="{{::S.colors(n)}}" ng-attr-transform="rotate({{::S.scale(n)}})"></circle>
     </g>
     <g class="cars">
       <g ng-repeat="car in vm.traffic.traveling track by car.id" d3-der="{transform: vm.rotator(car) }" class="g-car">
-        <rect width="3" height="2" x="-1.5" ng-attr-fill="{{::car.color}}" class="car"></rect>
+        <rect width="1.5" height="1" x="-.75" ng-attr-fill="{{::car.color}}" class="car"></rect>
       </g>
     </g>
     <g class="signals">
       <g ng-repeat="s in vm.traffic.signals track by s.id" d3-der="{transform: vm.rotator(s) }" class="g-signal">
-        <rect width="2" height="5" x="-2" ng-attr-fill="{{vm.sig_col(s.green)}}" class="signal"></rect>
+        <rect width="1" height="5" x="-1" ng-attr-fill="{{vm.sig_col(s.green)}}" class="signal"></rect>
       </g>
     </g>
   </g>

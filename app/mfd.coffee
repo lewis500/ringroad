@@ -9,16 +9,16 @@ class Ctrl
 			height: 300
 			m: 
 				t: 10
-				l: 30
-				r: 10
+				l: 40
+				r: 18
 				b: 35
 
 		@hor = d3.scale.linear()
-				.domain [0,S.num_cars]
+				.domain [0,S.num_cars*.8]
 				.range [0,@width]
 
 		@ver = d3.scale.linear()
-			.domain [0, S.num_cars*.6]
+			.domain [0, S.num_cars*.55]
 			.range [@height, 0]
 
 		@line = d3.svg.line()
@@ -28,6 +28,7 @@ class Ctrl
 		@horAxis = d3.svg.axis()
 			.scale @hor
 			.orient 'bottom'
+			.ticks 8
 
 		@verAxis = d3.svg.axis()
 			.scale @ver

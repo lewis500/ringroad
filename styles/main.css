@@ -6795,7 +6795,7 @@ md-tooltip {
     border: 1px solid #fff; } }
 
 svg.vis {
-  width: 500px;
+  width: 450px;
 }
 svg.vis,
 cum-chart {
@@ -6805,17 +6805,21 @@ cum-chart {
   rx: .2px;
   ry: .25px;
   stroke: #212121;
-  stroke-width: .2px;
+  stroke-width: .3px;
+}
+input[type="number"] {
+  text-align: center;
 }
 .memory {
   fill: #9c27b0;
   opacity: 0.8;
 }
 .signal {
-  stroke: none;
+  stroke: #424242;
+  stroke-width: .3px;
   rx: .2px;
   ry: .2px;
-  opacity: .7;
+  fill-opacity: .7;
 }
 .road {
   fill: none;

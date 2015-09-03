@@ -1,28 +1,17 @@
 TODAY
 -display what day it is
--use a scale to place cars instead of just loc
 -add zoom to the two plots
+
 
 
 TODO
 tolls
-go up to 300 cars
+use canvas to draw plots
+make another version that just has cars circling so you can test out different parameters for the MFD
 
-use canvas to draw paths
+
 
 RESEARCH
-- add signals so it becomes a trapezoid. its the simplest spatial structure you can simulate that mimics what happens in real life
 - randomness in signals
 - different greens and reds and different offsets
-- allow to change the number of signals
-- when close to one another capacity depends on offsets
-- 10x size of the network
-- decoupling. ring road is realistic because in a network with signals you can consider one arterial at a time
-
-for the time being
-common cycles
-you can play with hte offsets
-green percentage
-number of signals/distance between signals
-for critical distance...take the number of vehicles that can exit in one green. space them at jam spacing. that makes the maximum of the mfd lower.
 

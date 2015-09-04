@@ -11,12 +11,10 @@ svg.vis, cum-chart{
 }
 
 .car{
-	// fill: @clr-light-blue-700;
 	rx: .2px;
 	ry: .25px;
 	stroke: @clr-grey-900;
 	stroke-width: .3px;
-	// opacity: .9;
 }
 
 input[type="number"] {
@@ -33,7 +31,24 @@ input[type="number"] {
 	stroke-width: .3px;
 	rx: .2px;
 	ry: .2px;
-	fill-opacity: .7;
+	fill-opacity: .85;
+	fill: @clr-green-400;
+	transition: transform .2s ease-in-out;
+}
+
+// .g-car.ng-enter{
+// 	opacity: 0;
+// 	transition: all linear 100ms;
+// }
+
+// .g-car.ng-enter-active{
+// 	opacity: 1;
+// }
+
+.signal.red{
+	fill: @clr-red-400;
+	transform: scale(1.2);
+	transition: transform .2s ease-in-out;
 }
 
 .road{

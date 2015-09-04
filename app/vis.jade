@@ -20,11 +20,11 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 		g.gradient
 			circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::S.colors(n)}}' ng-attr-transform='rotate({{::S.scale(n)}})')
 		g.cars
-			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' d3-der='{transform: vm.rotator(car) }')
+			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' ng-attr-transform='{{vm.rotator(car)}}')
 				rect.car( width='1.5' height='1' x='-.75' ng-attr-fill='{{::car.color}}')
 		g.signals
 			g.g-signal(ng-repeat='s in vm.traffic.signals track by s.id' d3-der='{transform: vm.rotator(s) }' )
-				rect.signal(width='1' height='5' y='-2' x='-1' ng-attr-fill='{{vm.sig_col(s.green)}}' ng-class='{"red": (!s.green)}')
+				rect.signal(width='1' height='5' y='-2' x='-1' ng-class='{"red": (!s.green)}')
 
 cum-chart(cum='vm.traffic.cum')
 mfd-chart(memory='vm.traffic.memory')

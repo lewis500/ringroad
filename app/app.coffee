@@ -56,8 +56,6 @@ class Ctrl
 					true
 				, S.pace
 
-	sig_col:(green) -> if green then '#4CAF50' else '#F44336'
-
 	play: ->
 		@pause()
 		d3.timer.flush()
@@ -98,21 +96,6 @@ leaver = ->
 				.ease 'cubic'
 				.attr 'transform','scale(1)'
 
-signalAn = ->
-	res = 
-		addClass: (el,className)->
-			d3.select el[0]
-				.transition()
-				.duration 100
-				.ease 'cubic'
-				.attr 'transform',"scale(1.3)"
-		removeClass: (el,className)->
-			d3.select el[0]
-				.transition()
-				.duration 100
-				.ease 'cubic'
-				.attr 'transform',"scale(1)"
-
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
 	.directive 'datum', require './directives/datum'
@@ -121,6 +104,6 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	.directive 'mfdChart', require './mfd'
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
-	.animation '.signal', signalAn
-	.animation '.g-car', leaver
+	# .animation '.signal', signalAn
+	# .animation '.g-car', leaver
 	.directive 'sliderDer', require './directives/slider'

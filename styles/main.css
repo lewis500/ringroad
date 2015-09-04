@@ -6819,7 +6819,14 @@ input[type="number"] {
   stroke-width: .3px;
   rx: .2px;
   ry: .2px;
-  fill-opacity: .7;
+  fill-opacity: .85;
+  fill: #66bb6a;
+  transition: transform 0.2s ease-in-out;
+}
+.signal.red {
+  fill: #ef5350;
+  transform: scale(1.2);
+  transition: transform 0.2s ease-in-out;
 }
 .road {
   fill: none;

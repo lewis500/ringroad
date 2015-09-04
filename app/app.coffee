@@ -105,7 +105,7 @@ signalAn = ->
 				.transition()
 				.duration 100
 				.ease 'cubic'
-				.attr 'transform',"scale(1.5)"
+				.attr 'transform',"scale(1.3)"
 		removeClass: (el,className)->
 			d3.select el[0]
 				.transition()
@@ -122,5 +122,5 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
 	.animation '.signal', signalAn
-	# .animation '.g-car', leaver
+	.animation '.g-car', leaver
 	.directive 'sliderDer', require './directives/slider'

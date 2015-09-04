@@ -14,11 +14,11 @@ class Ctrl
 					.map (n)-> 	new Car( S.distance + _.random( -8,5) )
 		@scope.S = S
 		@day_start()
+		@scope.$watch 'S.num_signals',(n)=>
+			@traffic.change_signals n
+
 
 	rotator: (car)-> "rotate(#{S.scale(car.loc)}) translate(0,50)"
-
-	change_signals: (n)->
-		@traffic.change_signals()
 
 	day_start: ->
 		S.reset_time()
@@ -101,3 +101,4 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
 	.animation '.g-car', leaver
+	.directive 'sliderDer', require './directives/slider'

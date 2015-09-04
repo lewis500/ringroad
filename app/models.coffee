@@ -18,6 +18,7 @@ class Signal
 		if @count >= S.green*S.phase
 			@green = false
 
+
 class Traffic
 	constructor: ->
 		@change_signals S.num_signals
@@ -35,7 +36,7 @@ class Traffic
 			s.reset()
 
 	change_signals: (n)->
-		@signals = _.range 0,S.rl, S.rl/S.num_signals
+		@signals = _.range 0,S.rl, S.rl/n
 				.map (f)-> new Signal Math.floor f
 
 	done: ->

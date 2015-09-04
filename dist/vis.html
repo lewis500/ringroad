@@ -2,27 +2,9 @@
 <div layout="row">
   <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
   <div layout="column" flex="flex">
-    <div layout="layout" flex="flex">
-      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">#signals</span></div>
-      <md-slider flex="flex" ng-model="S.num_signals" ng-change="vm.traffic.change_signals(S.num_signals)" step="1" min="4" max="25"> </md-slider>
-      <div flex="20" layout="layout" layout-align="center center">
-        <input ng-model="S.num_signals" type="number" min="4" max="25" step="1"/>
-      </div>
-    </div>
-    <div layout="layout" flex="flex">
-      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">phase length</span></div>
-      <md-slider flex="flex" ng-model="S.phase" min="5" max="75" step="1"> </md-slider>
-      <div flex="20" layout="layout" layout-align="center center">
-        <input ng-model="S.phase" type="number" min="5" max="75" step="1"/>
-      </div>
-    </div>
-    <div layout="layout" flex="flex">
-      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">%green</span></div>
-      <md-slider flex="flex" ng-model="S.green" min=".1" max="1" step="0.1"> </md-slider>
-      <div flex="20" layout="layout" layout-align="center center">
-        <input ng-model="S.green" type="number" min=".1" max="1" step="0.1"/>
-      </div>
-    </div>
+    <slider-der flex="flex" min="2" max="25" step="1" label="#num signals" my-data="S.num_signals"></slider-der>
+    <slider-der flex="flex" min="5" max="75" step="1" label="phase length" my-data="S.phase"></slider-der>
+    <slider-der flex="flex" min=".1" max="1" step=".1" label="%green" my-data="S.green"></slider-der>
   </div>
 </div>
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">

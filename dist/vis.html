@@ -5,6 +5,12 @@
     <slider-der flex="flex" min="2" max="25" step="1" label="#num signals" my-data="S.num_signals"></slider-der>
     <slider-der flex="flex" min="5" max="75" step="1" label="phase length" my-data="S.phase"></slider-der>
     <slider-der flex="flex" min=".1" max="1" step=".1" label="%green" my-data="S.green"></slider-der>
+    <div layout="layout" flex="flex">
+      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">offset</span></div>
+      <md-slider flex="flex" ng-model="S.offset" min="0" max="1" step="{{1/S.num_signals}}" ng-model-options="{ getterSetter: true }" ng-change="vm.changer(S.num_signals)"> </md-slider>
+      <div flex="20" layout="layout" layout-align="center center"><span class="md-body-1">{{S.offset | number:2}}</span>
+      </div>
+    </div>
   </div>
 </div>
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">

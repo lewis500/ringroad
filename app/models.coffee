@@ -1,23 +1,27 @@
 S = require './settings'
 _ = require 'lodash'
+require './helpers'
 
 class Signal
-	constructor: (@loc)->
+	constructor: (@i,@loc)->
 		@green = true
 		@id = _.uniqueId 'signal-'
-		@reset()
+		@reset_offset()
 
-	reset: ->
-		[@count, @green] = [0, true]
+	@property 'offset', 
+		get: -> 
+			S.phase*((@i*S.offset)%1)
+
+	reset_offset: ->
+		[@count, @green] = [@offset, true]
 
 	update: ->
 		@count++
-		if @count >= S.phase
-			@reset()
+		if (@count) >= (S.phase)
+			[@count, @green] = [0, true]
 			return
-		if @count >= S.green*S.phase
+		if (@count)>= (S.green*S.phase)
 			@green = false
-
 
 class Traffic
 	constructor: ->
@@ -33,11 +37,11 @@ class Traffic
 			waiting: _.clone( waiting)
 
 		@signals.forEach (s)->
-			s.reset()
+			s.reset_offset()
 
 	change_signals: (n)->
 		@signals = _.range 0,S.rl, S.rl/n
-				.map (f)-> new Signal Math.floor f
+				.map (f,i)-> new Signal(i,Math.floor(f))
 
 	done: ->
 		(@waiting.length+@traveling.length)==0

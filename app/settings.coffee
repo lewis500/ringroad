@@ -38,11 +38,12 @@ class Settings
 			.domain [0,@rl]
 			.range [0,360]
 
-	@property 'offset',
-		set: (v)->
-			@_offset = _.round v,1/@num_signals
-		get: ->
-			@_offset
+	# @property 'num_signals',
+	# 	get: ->
+	# 		@_num_signals
+	# 	set: (v)->
+	# 		@offset = Math.round(@offset*v)/v
+	# 		@_num_signals = v
 
 	advance: ->
 		@time++

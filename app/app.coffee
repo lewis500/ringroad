@@ -15,8 +15,14 @@ class Ctrl
 		@scope.S = S
 		@day_start()
 		@scope.$watch 'S.num_signals',(n)=>
+			S.offset = Math.round(S.offset*n)/n
 			@traffic.change_signals n
 
+	changer: (v)->
+		@traffic.signals.forEach (s)->
+			s.reset_offset()
+
+		# @traffic.change_signals S.num_signals
 
 	rotator: (car)-> "rotate(#{S.scale(car.loc)}) translate(0,50)"
 

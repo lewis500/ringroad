@@ -72,31 +72,46 @@ visDer = ->
 		controller: ['$scope', '$element', Ctrl]
 
 leaver = ->
-		animate = 
-			leave: (el)->
-				d3.select el[0]
-					.select 'rect'
-					.transition()
-					.duration 50
-					.ease 'cubic'
-					.attr 'transform','scale(1.2,1)'
-					.attr 'fill','#eee'
-					.transition()
-					.duration 150
-					.ease 'cubic'
-					.attr 'transform','scale(0,1)'
-			enter: (el)->
-				d3.select el[0]
-					.select 'rect'
-					.attr 'transform','scale(0,.5)'
-					.transition()
-					.duration 60
-					.ease 'cubic'
-					.attr 'transform','scale(1.2,1)'
-					.transition()
-					.duration 150
-					.ease 'cubic'
-					.attr 'transform','scale(1)'
+	animate = 
+		leave: (el)->
+			d3.select el[0]
+				.select 'rect'
+				.transition()
+				.duration 50
+				.ease 'cubic'
+				.attr 'transform','scale(1.2,1)'
+				.attr 'fill','#eee'
+				.transition()
+				.duration 150
+				.ease 'cubic'
+				.attr 'transform','scale(0,1)'
+		enter: (el)->
+			d3.select el[0]
+				.select 'rect'
+				.attr 'transform','scale(0,.5)'
+				.transition()
+				.duration 60
+				.ease 'cubic'
+				.attr 'transform','scale(1.2,1)'
+				.transition()
+				.duration 150
+				.ease 'cubic'
+				.attr 'transform','scale(1)'
+
+signalAn = ->
+	res = 
+		addClass: (el,className)->
+			d3.select el[0]
+				.transition()
+				.duration 100
+				.ease 'cubic'
+				.attr 'transform',"scale(1.5)"
+		removeClass: (el,className)->
+			d3.select el[0]
+				.transition()
+				.duration 100
+				.ease 'cubic'
+				.attr 'transform',"scale(1)"
 
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
@@ -106,5 +121,6 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	.directive 'mfdChart', require './mfd'
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
+	.animation '.signal', signalAn
 	# .animation '.g-car', leaver
 	.directive 'sliderDer', require './directives/slider'

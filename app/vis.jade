@@ -16,6 +16,8 @@ div(layout='row')
 
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
+		text.label time: {{S.time}}
+		text.label(y='1em') day: {{S.day}}
 		circle.road(r='50')
 		g.gradient
 			circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::S.colors(n)}}' ng-attr-transform='rotate({{::S.scale(n)}})')

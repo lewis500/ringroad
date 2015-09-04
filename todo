@@ -1,17 +1,14 @@
 TODAY
 -display what day it is
 -add zoom to the two plots
-add an effect on the traffic lights so they get big
+-add an effect on the traffic lights so they get big when they change
 
 
 TODO
 tolls
 use canvas to draw plots
-make another version that just has cars circling so you can test out different parameters for the MFD
-
 
 
 RESEARCH
-- randomness in signals
 - different greens and reds and different offsets
 

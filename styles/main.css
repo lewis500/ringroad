@@ -6855,3 +6855,7 @@ rect.bg {
 .ex {
   stroke: #03a9f4;
 }
+text.label {
+  font-size: 5px;
+  text-anchor: middle;
+}

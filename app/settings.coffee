@@ -8,7 +8,7 @@ class Settings
 			num_cars: 250
 			time: 0
 			space: 5
-			pace: 20
+			pace: 15
 			stopping_time: 6
 			distance: 60
 			beta: .5
@@ -38,16 +38,10 @@ class Settings
 			.domain [0,@rl]
 			.range [0,360]
 
-	# @property 'num_signals',
-	# 	get: ->
-	# 		@_num_signals
-	# 	set: (v)->
-	# 		@offset = Math.round(@offset*v)/v
-	# 		@_num_signals = v
-
 	advance: ->
 		@time++
 	reset_time: ->
+		@day++
 		@time = 0
 
 module.exports = new Settings()

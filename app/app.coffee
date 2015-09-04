@@ -106,5 +106,5 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	.directive 'mfdChart', require './mfd'
 	.directive 'horAxis', require './directives/xAxis'
 	.directive 'verAxis', require './directives/yAxis'
-	.animation '.g-car', leaver
+	# .animation '.g-car', leaver
 	.directive 'sliderDer', require './directives/slider'

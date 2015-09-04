@@ -15,6 +15,8 @@
 </div>
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">
   <g transform="translate(55,55)" class="g-main">
+    <text class="label">time: {{S.time}}</text>
+    <text y="1em" class="label">day: {{S.day}}</text>
     <circle r="50" class="road"></circle>
     <g class="gradient">
       <circle r="1" cy="45" ng-repeat="n in vm.pal" ng-attr-fill="{{::S.colors(n)}}" ng-attr-transform="rotate({{::S.scale(n)}})"></circle>

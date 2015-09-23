@@ -14,26 +14,26 @@ class Ctrl
 				b: 35
 
 		@hor = d3.scale.linear()
-				.domain [0,S.rush_length]
+				.domain [0,S.rush_length+120]
 				.range [0,@width]
 
 		@ver = d3.scale.linear()
-			.domain [0, S.num_cars]
+			# .domain [0, S.num_cars]
+			.domain [0,2]
 			.range [@height, 0]
 
 		@lineEn = d3.svg.line()
 			.x (d)=>@hor d.time
-			.y (d)=>@ver d.cumEn
+			.y (d)=>@ver d.en
 
 		@lineEx = d3.svg.line()
 			.x (d)=>@hor d.time
-			.y (d)=>@ver d.cumEx
+			.y (d)=>@ver d.ex
 
 		@horAxis = d3.svg.axis()
 			.scale @hor
 			.orient 'bottom'
 			.ticks 8
-
 
 		@verAxis = d3.svg.axis()
 			.scale @ver
@@ -41,16 +41,16 @@ class Ctrl
 
 
 	ex: ->
-		@lineEx @cum
+		@lineEx @rate
 	en: ->
-		@lineEn @cum
+		@lineEn @rate
 	
 der = ->
 	directive = 
 		bindToController: true
 		controllerAs: 'vm'
 		scope: 
-			cum: '='
+			rate: '='
 		templateUrl: './dist/chart.html'
 		controller: ['$scope', '$element', Ctrl]
 

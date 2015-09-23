@@ -31,6 +31,7 @@ class Traffic
 		_.assign this,
 			traveling: []
 			cum: []
+			rate: []
 			memory: []
 			cumEn: 0
 			cumEx: 0
@@ -59,10 +60,16 @@ class Traffic
 
 
 	log: ->
-		@cum.push
+		c = 
 			time: S.time
 			cumEn: @cumEn
 			cumEx: @cumEx
+		if @cum.length > 40
+			@rate.push
+				time: S.time-20
+				en: (@cumEn - @cum[@cum.length-40].cumEn)/40
+				ex: (@cumEx - @cum[@cum.length-40].cumEx)/40
+		@cum.push c
 
 	receive: (car)->
 		@cumEn++
@@ -110,16 +117,18 @@ class Traffic
 		if l == 1
 			@traveling[0].set_next null
 
+n = 0
+
 class Car
 	constructor:(@distance)->
 		_.assign this,
 			id: _.uniqueId()
 			cost0: Infinity 
-			target: _.random 4,(S.rush_length - S.distance-35)
+			target: _.random 2,S.rush_length
 			exited: false
 
 	assign_error:-> 
-		@t_en = Math.max 0,(@target + _.random -2,2)
+		@t_en = Math.max 0,(@target + _.random -3,3)
 
 	# setters
 	set_next: (@next)->
@@ -139,7 +148,7 @@ class Car
 		@cost =  @tt+@sp 
 
 	choose: ->
-		if _.lte @cost,@cost0 then [@cost0,@target] = [@cost, @t_en]
+		if _.lt @cost,@cost0 then [@cost0,@target] = [@cost, @t_en]
 
 	enter:(@loc)->
 		@destination = Math.floor (@loc + @distance)%S.rl

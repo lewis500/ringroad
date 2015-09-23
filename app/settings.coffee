@@ -5,23 +5,23 @@ require './helpers'
 class Settings
 	constructor:->
 		_.assign this,
-			num_cars: 250
+			num_cars: 600
 			time: 0
-			space: 5
-			pace: 15
+			space: 3
+			pace: 1
 			stopping_time: 6
 			distance: 60
 			beta: .5
 			gamma: 2
-			rush_length: 250
+			rush_length: 550
 			frequency: 8
 			rl: 1000
-			phase: 50
+			phase: 25
 			green: .5
-			wish: 150
-			num_signals: 10
+			wish: 325
+			num_signals: 50
 			day: 0
-			offset: 0
+			offset: .3
 
 		@colors = d3.scale.linear()
 			.domain _.range 0,@rl,@rl/6

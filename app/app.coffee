@@ -36,7 +36,7 @@ class Ctrl
 	day_end: ->
 		@physics = false #physics stage not happening
 		_.invoke @cars, 'eval_cost'
-		_.sample @cars, 25
+		_.sample @cars, 200
 			.forEach (d)-> d.choose()
 
 		setTimeout => @day_start()
@@ -56,9 +56,43 @@ class Ctrl
 					true
 				, S.pace
 
+			d3.timer =>
+					if @traffic.done()
+						# @day_end()
+						true
+					S.advance()
+					@traffic.update()
+					# @scope.$evalAsync()
+					# if !@paused then @tick()
+					true
+				, S.pace
+
+			d3.timer =>
+					if @traffic.done()
+						# @day_end()
+						true
+					S.advance()
+					@traffic.update()
+					# @scope.$evalAsync()
+					# if !@paused then @tick()
+					true
+				, S.pace
+
+			d3.timer =>
+					if @traffic.done()
+						# @day_end()
+						true
+					S.advance()
+					@traffic.update()
+					# @scope.$evalAsync()
+					# if !@paused then @tick()
+					true
+				, S.pace
+
+
 	play: ->
 		@pause()
-		d3.timer.flush()
+		# d3.timer.flush()
 		@paused = false
 		@tick()
 

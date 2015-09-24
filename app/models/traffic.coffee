@@ -42,9 +42,11 @@ class Traffic
 		for i in [0...n]
 			signal = new Signal i
 			@signals.push signal
-			# signal.set_offset((i*S.offset)%1)
 			q = Math.floor(i/n*S.num_cells)
 			@cells[q].set_signal signal
+
+	change_offsets: ->
+		s.reset() for s in @signals
 
 	day_start:(cars)->
 		_.assign this,

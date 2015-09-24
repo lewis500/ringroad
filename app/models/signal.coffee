@@ -6,13 +6,16 @@ class Signal
 		@count = 0
 		@green = true
 		@id = _.uniqueId 'signal-'
-		@reset_offset()
+		@reset()
+
+	# set_offset: (@offset)->
+	# 	@reset()
 
 	@property 'offset', 
 		get: -> 
 			S.phase*((@i*S.offset)%1)
 
-	reset_offset: ->
+	reset: ->
 		[@count, @green] = [@offset, true]
 
 	tick: ->

@@ -13,6 +13,7 @@ class Settings
 			sample: 30
 			beta: .5
 			gamma: 2
+			offset: 0
 			rush_length: 800
 			# frequency: 8
 			num_cells: 1000

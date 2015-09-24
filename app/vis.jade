@@ -8,7 +8,7 @@ div(layout='row')
 		div(layout flex)
 			div(flex="10" layout layout-align="center center")
 				span(class="md-body-1") offset
-			md-slider(flex ng-model='S.offset' min='0' max='1' step='{{1/S.num_signals}}' ng-model-options="{ getterSetter: true }") 
+			md-slider(flex ng-model='S.offset' min='0' max='.5' step='{{1/S.num_signals}}' ng-model-options="{ getterSetter: true }") 
 			div(flex='20' layout layout-align="center center" )
 				span(class='md-body-1') {{S.offset | number:2}}
 

@@ -15,8 +15,9 @@ class Ctrl
 		@cars = [0...S.num_cars].map -> new Car( S.distance + _.random( -8,5) )
 		@scope.S = S
 		@traffic.day_start @cars
-		@scope.$watch 'S.num_signals',=>
-			 @traffic.change_signals S.num_signals
+		@scope.$watch 'S.num_signals',(n)=>
+			S.offset = Math.round(S.offset*n)/n
+			@traffic.change_signals S.num_signals
 
 	rotator: (car)-> "rotate(#{S.scale(car.loc)}) translate(0,50)"
 

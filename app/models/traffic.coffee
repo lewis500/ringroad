@@ -75,7 +75,7 @@ class Traffic
 
 	tick:->
 		[flow,exits,entries] = [0,0,0]
-
+		S.advance()
 		k = @cells
 		for car in @waiting
 			if (car.t_en<=S.time)
@@ -85,16 +85,16 @@ class Traffic
 					cell.receive car
 					@traveling.push car
 					entries++
-					flow++
+					# flow++
 
 		for cell,i in k
 			if cell.car
 				if cell.car.destination==cell.loc
 					cell.car.exit()
 					cell.remove()
-					exits++
+					# exits++
 					flow++
-				if k[(i+1)%k.length].is_free()
+				else if k[(i+1)%k.length].is_free()
 					k[(i+1)%k.length].receive cell.car
 					cell.remove()
 					flow++

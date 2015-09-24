@@ -2,20 +2,39 @@ S = require './settings'
 _ = require 'lodash'
 require './helpers'
 
+class Cell
+	constructor: (@loc)->
+		@last = -Infinity
+		@temp_car = false
+		@id = _.uniqueId 'cell'
+
+	space: 4
+
+	receive:(car)->
+		car.set_loc @loc
+		@last = S.time
+		@temp_car = car
+		car.cell = this
+
+	remove: ->
+		@temp_car = false
+
+	finalize: ->
+		if (@car=@temp_car)
+			@last = S.time
+
+	is_free: ->
+		(S.time-@last)>@space
+
 class Signal
-	constructor: (@i,@loc)->
-		@green = true
+	constructor: ->
 		@id = _.uniqueId 'signal-'
-		@reset_offset()
+		@reset()
 
-	@property 'offset', 
-		get: -> 
-			S.phase*((@i*S.offset)%1)
+	reset: ->
+		[@count, @green] = [0, true]
 
-	reset_offset: ->
-		[@count, @green] = [@offset, true]
-
-	update: ->
+	tick: ->
 		@count++
 		if (@count) >= (S.phase)
 			[@count, @green] = [0, true]
@@ -25,9 +44,9 @@ class Signal
 
 class Traffic
 	constructor: ->
-		@change_signals S.num_signals
+		@cells = (new Cell n for n in [0...S.num_cells])
 
-	reset:(waiting)->
+	day_start:(cars)->
 		_.assign this,
 			traveling: []
 			cum: []
@@ -35,111 +54,69 @@ class Traffic
 			memory: []
 			cumEn: 0
 			cumEx: 0
-			waiting: _.clone( waiting)
+			waiting: _.clone cars
+			cars: _.clone cars
 
-		@signals.forEach (s)->
-			s.reset_offset()
+		for cell in @cells
+			cell.car = cell.temp_car = false
+			cell.last = -Infinity
 
-	change_signals: (n)->
-		@signals = _.range 0,S.rl, S.rl/n
-				.map (f,i)-> new Signal(i,Math.floor(f))
+		car.assign_error() for car in @waiting
+
+	day_end:(cars)->
+		car.eval_cost() for car in cars
+		car.choose() for car in _.sample(cars,S.sample)
+		car.reset() for car in cars
 
 	done: ->
 		(@waiting.length+@traveling.length)==0
 
-	remember: ->
-		mem = 
-			n: @traveling.length
-			v: 0
-			f: 0
-		@traveling.forEach (d)->
-			if d.stopped == 0
-				mem.f++
-				mem.v+=(1/mem.n)
-		@memory.push mem
+	tick:->
+		free_cells = 
+		k = @cells
+		for car in @waiting
+			if (car.t_en<=S.time)
+				cell = _.sample _.filter( @cells,(c)->c.is_free())
+				if cell
+					car.enter cell.loc
+					cell.receive car
+					@traveling.push car
 
+		cell.finalize() for cell in @cells
+		
+		for cell,i in k
+			if cell.car
+				if cell.car.destination==cell.loc
+					cell.car.exit()
+					cell.remove()
+				if k[(i+1)%k.length].is_free()
+					k[(i+1)%k.length].receive cell.car
+					cell.remove()
+					
+		cell.finalize() for cell in @cells
 
-	log: ->
-		c = 
-			time: S.time
-			cumEn: @cumEn
-			cumEx: @cumEx
-		if @cum.length > 40
-			@rate.push
-				time: S.time-20
-				en: (@cumEn - @cum[@cum.length-40].cumEn)/40
-				ex: (@cumEx - @cum[@cum.length-40].cumEx)/40
-		@cum.push c
+		@waiting = _.filter @waiting, (c)-> !c.entered
+		@traveling = _.filter @traveling, (c)-> !c.exited
 
-	receive: (car)->
-		@cumEn++
-		loc = _.random 0,S.rl
-		g0 = 0
-		_.forEach @traveling, (c)->
-			g = c.get_gap()
-			if g >= g0
-				loc = Math.floor(c.loc + g/2)%S.rl
-				g0 = g
-
-		if (g0 > 0 and @traveling.length>0) or (@traveling.length==0)
-			_.remove @waiting, car
-			car.enter loc
-			@traveling.push car
-			@order_cars()
-
-	remove: (car)->
-		@cumEx++
-		_.remove @traveling, car
-
-	update: ->
-		reds = []
-		@signals.forEach (s)->
-			s.update()
-			if !s.green
-				reds.push s.loc
-
-		@waiting.forEach (car)=>
-			if _.lt car.t_en,S.time then @receive car
-		@traveling.forEach (car)=>
-			car.move reds
-			if car.exited then @remove car
-
-		@log()
-		if (S.time%S.frequency==0) then @remember()
-
-		@order_cars()
-
-	order_cars: ->
-		if (l = @traveling.length) > 1
-			@traveling.sort (a,b)-> a.loc - b.loc
-			@traveling.forEach (car,i,k)->
-				car.set_next k[(i+1)%l]
-		if l == 1
-			@traveling[0].set_next null
-
-n = 0
 
 class Car
-	constructor:(@distance)->
+	constructor:->
 		_.assign this,
-			id: _.uniqueId()
+			id: _.uniqueId 'car-'
 			cost0: Infinity 
 			target: _.random 2,S.rush_length
 			exited: false
+			entered: false
+			distance: 60
 
 	assign_error:-> 
 		@t_en = Math.max 0,(@target + _.random -3,3)
 
-	# setters
-	set_next: (@next)->
+	reset:->
+		[@cost0, @entered, @exited] = [@cost,false,false]
 
-	get_gap:->
-		if !@next then return Math.floor S.rl/2
-		gap = @next.loc - @loc
-		if _.lte gap,0 then (gap+S.rl) else gap
-
-	exit: ->
-		[@next, @t_ex, @exited] = [undefined, S.time, true]
+	exit:->
+		[@t_ex, @exited] = [S.time, true]
 
 	eval_cost: ->
 		@sd = @t_ex - S.wish
@@ -148,24 +125,15 @@ class Car
 		@cost =  @tt+@sp 
 
 	choose: ->
-		if _.lt @cost,@cost0 then [@cost0,@target] = [@cost, @t_en]
+		if @cost>@cost0
+			[@cost0,@target] = [@cost, @t_en]
+
+	set_loc: (@loc)->
 
 	enter:(@loc)->
-		@destination = Math.floor (@loc + @distance)%S.rl
-		# @destination = Math.floor @destination
-		[@cost0, @exited, @stopped, @color] = [@cost,false,0, S.colors(@destination)]
-
-	move: (reds)->
-		if @stopped > 0 then @stopped--
-		else
-			if @loc == @destination
-				@exit()
-			else 
-				next_loc = (@loc + 1)%S.rl
-				if (@get_gap() >= S.space) and (next_loc not in reds)
-					@loc = next_loc
-				else
-					@stopped = S.stopping_time
+		@entered = true
+		@destination = Math.floor (@loc + @distance)%S.num_cells
+		@color = S.colors _.random S.num_cells
 
 module.exports = 
 	Car: Car

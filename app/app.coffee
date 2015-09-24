@@ -10,89 +10,38 @@ class Ctrl
 			paused: true
 			traffic: new Traffic
 			pal: _.range 0,S.rl,S.rl/25
-			cars: _.range S.num_cars
-					.map (n)-> 	new Car( S.distance + _.random( -8,5) )
+		@cars = [0...S.num_cars].map -> new Car( S.distance + _.random( -8,5) )
 		@scope.S = S
-		@day_start()
-		@scope.$watch 'S.num_signals',(n)=>
-			S.offset = Math.round(S.offset*n)/n
-			@traffic.change_signals n
-
-	changer: (v)->
-		@traffic.signals.forEach (s)->
-			s.reset_offset()
-
-		# @traffic.change_signals S.num_signals
+		@traffic.day_start @cars
 
 	rotator: (car)-> "rotate(#{S.scale(car.loc)}) translate(0,50)"
 
 	day_start: ->
 		S.reset_time()
-		@physics = true #physics stage happening
-		@traffic.reset @cars
-		_.invoke @cars, 'assign_error'
+		@traffic.day_start @cars
 		@tick()
 
 	day_end: ->
-		@physics = false #physics stage not happening
-		_.invoke @cars, 'eval_cost'
-		_.sample @cars, 200
-			.forEach (d)-> d.choose()
-
-		setTimeout => @day_start()
+		@traffic.day_end @cars
+		# @physics = false #physics stage not happening
+		setTimeout => @day_start @cars
 
 	click: (val) -> if !val then @play()
 	pause: -> @paused = true
 	tick: ->
-		if @physics
-			d3.timer =>
-					if @traffic.done()
-						@day_end()
-						true
-					S.advance()
-					@traffic.update()
-					@scope.$evalAsync()
-					if !@paused then @tick()
-					true
-				, S.pace
-
-			d3.timer =>
-					if @traffic.done()
-						# @day_end()
-						true
-					S.advance()
-					@traffic.update()
-					# @scope.$evalAsync()
-					# if !@paused then @tick()
-					true
-				, S.pace
-
-			d3.timer =>
-					if @traffic.done()
-						# @day_end()
-						true
-					S.advance()
-					@traffic.update()
-					# @scope.$evalAsync()
-					# if !@paused then @tick()
-					true
-				, S.pace
-
-			d3.timer =>
-					if @traffic.done()
-						# @day_end()
-						true
-					S.advance()
-					@traffic.update()
-					# @scope.$evalAsync()
-					# if !@paused then @tick()
-					true
-				, S.pace
-
+		d3.timer =>
+				if @traffic.done()
+					@day_end @cars
+					return true
+				S.advance()
+				@traffic.tick()
+				@scope.$evalAsync()
+				if !@paused then @tick()
+				true
+			, S.pace
 
 	play: ->
 		@pause()
-		# d3.timer.flush()
 		@paused = false
 		@tick()
 

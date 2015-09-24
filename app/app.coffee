@@ -35,10 +35,13 @@ class Ctrl
 					return true
 				S.advance()
 				@traffic.tick()
+				@traffic.tick()
+				@traffic.tick()
 				@scope.$evalAsync()
-				if !@paused then @tick()
-				true
-			, S.pace
+				@paused
+			# 	if !@paused then @tick()
+			# 	true
+			# , S.pace
 
 	play: ->
 		@pause()

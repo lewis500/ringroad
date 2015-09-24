@@ -6804,9 +6804,6 @@ cum-chart {
 .car {
   rx: .2px;
   ry: .25px;
-  stroke: #212121;
-  stroke-width: .3px;
-  opacity: .7;
 }
 input[type="number"] {
   text-align: center;

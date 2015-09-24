@@ -2,11 +2,29 @@ S = require './settings'
 _ = require 'lodash'
 require './helpers'
 
+class Signal
+	constructor: ->
+		@count = 0
+		@green = true
+		@id = _.uniqueId 'signal-'
+
+	tick: ->
+		@count++
+		if @count >= S.phase
+			@count = 0
+			@green = true
+			return
+		if @count >= (S.green*S.phase)
+			@green = false
+
 class Cell
 	constructor: (@loc)->
 		@last = -Infinity
 		@temp_car = false
 		@id = _.uniqueId 'cell'
+
+	set_signal: (@signal)->
+		@signal.loc = @loc
 
 	space: 4
 
@@ -20,31 +38,26 @@ class Cell
 		@temp_car = false
 
 	finalize: ->
+		@signal?.tick()
 		if (@car=@temp_car)
 			@last = S.time
 
 	is_free: ->
-		(S.time-@last)>@space
+		if @signal
+			@signal.green and (S.time-@last)>@space
+		else
+			(S.time-@last)>@space
 
-class Signal
-	constructor: ->
-		@id = _.uniqueId 'signal-'
-		@reset()
-
-	reset: ->
-		[@count, @green] = [0, true]
-
-	tick: ->
-		@count++
-		if (@count) >= (S.phase)
-			[@count, @green] = [0, true]
-			return
-		if (@count)>= (S.green*S.phase)
-			@green = false
 
 class Traffic
 	constructor: ->
 		@cells = (new Cell n for n in [0...S.num_cells])
+		@signals = []
+		for i in [0...S.num_signals]
+			signal = new Signal
+			@signals.push signal
+			n = Math.floor( i/S.num_signals*S.num_cells )
+			@cells[n].set_signal signal
 
 	day_start:(cars)->
 		_.assign this,
@@ -72,7 +85,6 @@ class Traffic
 		(@waiting.length+@traveling.length)==0
 
 	tick:->
-		free_cells = 
 		k = @cells
 		for car in @waiting
 			if (car.t_en<=S.time)
@@ -82,7 +94,7 @@ class Traffic
 					cell.receive car
 					@traveling.push car
 
-		cell.finalize() for cell in @cells
+		# cell.finalize() for cell in @cells
 		
 		for cell,i in k
 			if cell.car
@@ -138,4 +150,3 @@ class Car
 module.exports = 
 	Car: Car
 	Traffic: Traffic
-	Signal: Signal

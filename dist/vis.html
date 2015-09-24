@@ -2,6 +2,14 @@
 <div layout="row">
   <md-switch flex="20" ng-model="vm.paused" ng-change="vm.click(vm.paused)">{{vm.paused? 'Paused' : 'Play'}}</md-switch>
   <div layout="column" flex="flex">
+    <slider-der flex="flex" min="2" max="60" step="1" label="#num signals" my-data="S.num_signals"></slider-der>
+    <slider-der flex="flex" min="5" max="75" step="1" label="phase length" my-data="S.phase"></slider-der>
+    <slider-der flex="flex" min=".1" max="1" step=".1" label="%green" my-data="S.green"></slider-der>
+    <div layout="layout" flex="flex">
+      <div flex="10" layout="layout" layout-align="center center"><span class="md-body-1">offset</span></div>
+      <md-slider flex="flex" ng-model="S.offset" min="0" max="1" step="{{1/S.num_signals}}" ng-model-options="{ getterSetter: true }" ng-change="vm.changer(S.num_signals)"> </md-slider>
+      <div flex="20" layout="layout" layout-align="center center"><span class="md-body-1">{{S.offset | number:2}}</span></div>
+    </div>
   </div>
 </div>
 <svg version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110" class="vis">
@@ -11,7 +19,12 @@
     <circle r="50" class="road"></circle>
     <g class="cars">
       <g ng-repeat="car in vm.traffic.traveling track by car.id" ng-attr-transform="{{vm.rotator(car)}}" class="g-car">
-        <rect width="1" height="1" x="-.75" ng-attr-fill="{{::car.color}}" class="car"></rect>
+        <rect width=".5" height="2" y="-1" x="-.25" ng-attr-fill="{{::car.color}}" class="car"></rect>
+      </g>
+    </g>
+    <g class="signals">
+      <g ng-repeat="s in vm.traffic.signals track by s.id" d3-der="{transform: vm.rotator(s) }" class="g-signal">
+        <rect width="1" height="5" y="-2" x="-1" ng-class="{&quot;red&quot;: (!s.green)}" class="signal"></rect>
       </g>
     </g>
   </g>

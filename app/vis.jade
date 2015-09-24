@@ -1,16 +1,16 @@
 div(layout='row')
 	md-switch(flex='20' ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
 	div(layout='column' flex)
-		//- slider-der(flex min= '2' max='60' step='1' label='#num signals' my-data='S.num_signals')
-		//- slider-der(flex min= '5' max='75' step='1' label='phase length' my-data='S.phase')
-		//- slider-der(flex min= '.1' max='1' step='.1' label='%green' my-data='S.green')
+		slider-der(flex min= '2' max='60' step='1' label='#num signals' my-data='S.num_signals')
+		slider-der(flex min= '5' max='75' step='1' label='phase length' my-data='S.phase')
+		slider-der(flex min= '.1' max='1' step='.1' label='%green' my-data='S.green')
 
-		//- div(layout flex)
-		//- 	div(flex="10" layout layout-align="center center")
-		//- 		span(class="md-body-1") offset
-		//- 	md-slider(flex ng-model='S.offset' min='0' max='1' step='{{1/S.num_signals}}' ng-model-options="{ getterSetter: true }" ng-change='vm.changer(S.num_signals)') 
-		//- 	div(flex='20' layout layout-align="center center" )
-		//- 		span(class='md-body-1') {{S.offset | number:2}}
+		div(layout flex)
+			div(flex="10" layout layout-align="center center")
+				span(class="md-body-1") offset
+			md-slider(flex ng-model='S.offset' min='0' max='1' step='{{1/S.num_signals}}' ng-model-options="{ getterSetter: true }" ng-change='vm.changer(S.num_signals)') 
+			div(flex='20' layout layout-align="center center" )
+				span(class='md-body-1') {{S.offset | number:2}}
 
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
@@ -21,8 +21,8 @@ svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 		//- 	circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::S.colors(n)}}' ng-attr-transform='rotate({{::S.scale(n)}})')
 		g.cars
 			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' ng-attr-transform='{{vm.rotator(car)}}')
-				rect.car( width='1' height='1' x='-.75' ng-attr-fill='{{::car.color}}')
-		//- g.signals
+				rect.car( width='.5' height='2' y='-1' x='-.25' ng-attr-fill='{{::car.color}}')
+		g.signals
 			g.g-signal(ng-repeat='s in vm.traffic.signals track by s.id' d3-der='{transform: vm.rotator(s) }' )
 				rect.signal(width='1' height='5' y='-2' x='-1' ng-class='{"red": (!s.green)}')
 

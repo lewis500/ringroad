@@ -5,21 +5,21 @@ _ = require 'lodash'
 class Settings
 	constructor:->
 		_.assign this,
-			num_cars: 300
+			num_cars: 1000
 			time: 0
-			space: 4
-			pace: 20
-			distance: 60
+			space: 3
+			pace: 1
+			distance: 90
 			sample: 30
 			beta: .5
 			gamma: 2
-			rush_length: 300
+			rush_length: 800
 			# frequency: 8
-			num_cells: 500
-			phase: 25
+			num_cells: 1000
+			phase: 50
 			green: .5
 			wish: 325
-			num_signals: 50
+			num_signals: 20
 			day: 0
 			offset: .3
 

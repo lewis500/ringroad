@@ -2,7 +2,9 @@ angular = require 'angular'
 d3 = require 'd3'
 _ = require 'lodash'
 S = require './settings'
-{Car,Traffic,Signal} = require './models'
+# {Car,Traffic,Signal} = require './models'
+Traffic = require './models/traffic'
+Car = require './models/car'
 
 class Ctrl
 	constructor:(@scope,el)->
@@ -25,7 +27,6 @@ class Ctrl
 
 	day_end: ->
 		@traffic.day_end @cars
-		# @physics = false #physics stage not happening
 		setTimeout => @day_start @cars
 
 	click: (val) -> if !val then @play()
@@ -41,9 +42,6 @@ class Ctrl
 				@traffic.tick()
 				@scope.$evalAsync()
 				@paused
-			# 	if !@paused then @tick()
-			# 	true
-			# , S.pace
 
 	play: ->
 		@pause()

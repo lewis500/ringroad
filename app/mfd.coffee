@@ -18,12 +18,12 @@ class Ctrl
 				.range [0,@width]
 
 		@ver = d3.scale.linear()
-			.domain [0, S.num_cars*.55]
+			.domain [0, S.num_cars*.25]
 			.range [@height, 0]
 
 		@line = d3.svg.line()
-			.x (d)=>@hor d.n
-			.y (d)=>@ver d.f
+			.x (d)=>@hor d.acc
+			.y (d)=>@ver d.flow
 
 		@horAxis = d3.svg.axis()
 			.scale @hor

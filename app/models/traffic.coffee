@@ -1,10 +1,40 @@
 S = require '../settings'
 _ = require 'lodash'
+Car = require './car'
+Signal = require './signal'
+Cell = require './cell'
+
+class Memory
+	constructor:->
+		@reset()
+
+	reset:->
+		@state = []
+		@cum = []
+		@_state = []
+
+	store:(flow,exits,entries,acc)->
+		@_state.push 
+			flow: flow
+			exits: exits
+			entries: entries
+			acc: acc
+
+		if @_state.length > 100
+			@_state.shift()
+
+		new_d = _.reduce @_state, (a,b)->
+			res = 
+				flow: a.flow+=b.flow/100
+				exits: a.exits+=b.exits/100
+				entries: a.entries+=b.entries/100
+				acc: a.acc += b.acc/100
+
+		@state.push new_d
 
 class Traffic
 	constructor: ->
 		@cells = (new Cell n for n in [0...S.num_cells])
-		# @change_signals
 
 	change_signals: (n)->
 		@signals = []
@@ -20,7 +50,7 @@ class Traffic
 			traveling: []
 			cum: []
 			rate: []
-			memory: []
+			memory: new Memory
 			cumEn: 0
 			cumEx: 0
 			waiting: _.clone cars
@@ -41,6 +71,8 @@ class Traffic
 		(@waiting.length+@traveling.length)==0
 
 	tick:->
+		[flow,exits,entries] = [0,0,0]
+
 		k = @cells
 		for car in @waiting
 			if (car.t_en<=S.time)
@@ -49,19 +81,26 @@ class Traffic
 					car.enter cell.loc
 					cell.receive car
 					@traveling.push car
+					entries++
+					flow++
 
 		for cell,i in k
 			if cell.car
 				if cell.car.destination==cell.loc
 					cell.car.exit()
 					cell.remove()
+					exits++
+					flow++
 				if k[(i+1)%k.length].is_free()
 					k[(i+1)%k.length].receive cell.car
 					cell.remove()
-					
+					flow++
+
 		cell.finalize() for cell in @cells
 
 		@waiting = _.filter @waiting, (c)-> !c.entered
 		@traveling = _.filter @traveling, (c)-> !c.exited
+		if S.time%20 == 0
+			@memory.store flow,exits,entries,@traveling.length
 
 module.exports = Traffic

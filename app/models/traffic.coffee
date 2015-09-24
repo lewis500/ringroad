@@ -40,9 +40,9 @@ class Traffic
 		@signals = []
 		cell.clear_signal() for cell in @cells
 		for i in [0...n]
-			signal = new Signal
+			signal = new Signal i
 			@signals.push signal
-			signal.set_offset((i*S.offset)%1)
+			# signal.set_offset((i*S.offset)%1)
 			q = Math.floor(i/n*S.num_cells)
 			@cells[q].set_signal signal
 

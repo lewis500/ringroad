@@ -1,6 +1,5 @@
 d3 = require 'd3'
 _ = require 'lodash'
-# require './helpers'
 
 class Settings
 	constructor:->

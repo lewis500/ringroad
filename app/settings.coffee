@@ -5,7 +5,7 @@ _ = require 'lodash'
 class Settings
 	constructor:->
 		_.assign this,
-			num_cars: 1000
+			num_cars: 1500
 			time: 0
 			space: 3
 			pace: 1
@@ -19,7 +19,7 @@ class Settings
 			num_cells: 1000
 			phase: 50
 			green: .5
-			wish: 325
+			wish: 400
 			num_signals: 20
 			day: 0
 			offset: .3

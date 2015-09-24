@@ -19,7 +19,7 @@ class Ctrl
 			@traffic.change_signals S.num_signals
 
 		@scope.$watch 'S.offset',(n)=>
-			# S.offset = Math.round(S.offset*S.num_signals)/S.num_signals
+			S.offset = Math.round(S.offset*S.num_signals)/S.num_signals
 			@traffic.change_offsets()
 
 	rotator: (car)-> "rotate(#{S.scale(car.loc)}) translate(0,50)"

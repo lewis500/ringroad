@@ -26,6 +26,9 @@ class Cell
 	set_signal: (@signal)->
 		@signal.loc = @loc
 
+	clear_signal: ->
+		@signal = undefined
+
 	space: 4
 
 	receive:(car)->
@@ -52,12 +55,16 @@ class Cell
 class Traffic
 	constructor: ->
 		@cells = (new Cell n for n in [0...S.num_cells])
+		# @change_signals
+
+	change_signals: (n)->
 		@signals = []
-		for i in [0...S.num_signals]
+		cell.clear_signal() for cell in @cells
+		for i in [0...n]
 			signal = new Signal
 			@signals.push signal
-			n = Math.floor( i/S.num_signals*S.num_cells )
-			@cells[n].set_signal signal
+			q = Math.floor(  i/n*S.num_cells)
+			@cells[q].set_signal signal
 
 	day_start:(cars)->
 		_.assign this,

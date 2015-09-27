@@ -8,6 +8,8 @@
     <g ver-axis="ver-axis" fun="vm.verAxis">
       <text x="5" y="12">flow</text>
     </g>
-    <path ng-attr-d="{{vm.d()}}" class="flow"></path>
+    <g class="g-circles">
+      <circle ng-repeat="d in vm.memory track by d.id" r="2" ng-attr-transform="translate({{vm.hor(d.k)}},{{vm.ver(d.q)}})" class="memory"></circle>
+    </g>
   </g>
 </svg>

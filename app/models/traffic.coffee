@@ -5,36 +5,35 @@ Signal = require './signal'
 Cell = require './cell'
 
 class Memory
-	constructor:->
+	constructor: ->
+		@day_start()
+	reset:->
+		[@q,@k,@i] = [0,0,0]
+
+	span: 30
+
+	day_start: ->
+		@long_term = []
 		@reset()
 
-	reset:->
-		@state = []
-		@cum = []
-		@_state = []
-
-	store:(flow,exits,entries,acc)->
-		@_state.push 
-			flow: flow
-			exits: exits
-			entries: entries
-			acc: acc
-
-		if @_state.length > 100
-			@_state.shift()
-
-		new_d = _.reduce @_state, (a,b)->
-			res = 
-				flow: a.flow+=b.flow/100
-				exits: a.exits+=b.exits/100
-				entries: a.entries+=b.entries/100
-				acc: a.acc += b.acc/100
-
-		@state.push new_d
+	remember:(q,k)->
+		@i++
+		@q+=q
+		@k+=k
+		if @i>=@span
+			@long_term.push 
+				q: @q/(@span*S.num_cells)
+				k: @k/(@span*S.num_cells)
+				id: _.uniqueId 'memory-'
+			@reset()
 
 class Traffic
 	constructor: ->
 		@cells = (new Cell n for n in [0...S.num_cells])
+		for cell,i in @cells
+			cell.next = @cells[(i+1)%@cells.length]
+
+		@memory = new Memory()
 
 	change_signals: (n)->
 		@signals = []
@@ -53,11 +52,12 @@ class Traffic
 			traveling: []
 			cum: []
 			rate: []
-			memory: new Memory
-			cumEn: 0
-			cumEx: 0
+			# cumEn: 0
+			# cumEx: 0
 			waiting: _.clone cars
 			cars: _.clone cars
+
+		@memory.day_start()
 
 		for cell in @cells
 			cell.car = cell.temp_car = false
@@ -85,17 +85,17 @@ class Traffic
 					cell.receive car
 					@traveling.push car
 					entries++
-					# flow++
+					flow++
 
 		for cell,i in k
 			if cell.car
 				if cell.car.destination==cell.loc
 					cell.car.exit()
 					cell.remove()
-					# exits++
+					exits++
 					flow++
-				else if k[(i+1)%k.length].is_free()
-					k[(i+1)%k.length].receive cell.car
+				else if cell.next.is_free()
+					cell.next.receive cell.car
 					cell.remove()
 					flow++
 
@@ -103,7 +103,6 @@ class Traffic
 
 		@waiting = _.filter @waiting, (c)-> !c.entered
 		@traveling = _.filter @traveling, (c)-> !c.exited
-		if S.time%20 == 0
-			@memory.store flow,exits,entries,@traveling.length
+		@memory.remember flow,@traveling.length
 
 module.exports = Traffic

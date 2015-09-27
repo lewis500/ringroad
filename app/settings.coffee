@@ -6,15 +6,14 @@ class Settings
 		_.assign this,
 			num_cars: 1500
 			time: 0
-			space: 3
+			space: 4
 			pace: 1
 			distance: 90
 			sample: 30
 			beta: .5
 			gamma: 2
 			offset: 0
-			rush_length: 800
-			# frequency: 8
+			rush_length: 600
 			num_cells: 1000
 			phase: 50
 			green: .5

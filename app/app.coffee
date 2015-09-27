@@ -4,7 +4,7 @@ _ = require 'lodash'
 S = require './settings'
 Traffic = require './models/traffic'
 Car = require './models/car'
-
+require './solver'
 class Ctrl
 	constructor:(@scope,el)->
 		_.assign this,

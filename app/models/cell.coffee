@@ -1,5 +1,7 @@
 S = require '../settings'
 _ = require 'lodash'
+console.log 'hello'
+
 class Cell
 	constructor: (@loc)->
 		@last = -Infinity

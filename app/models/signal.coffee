@@ -1,15 +1,13 @@
 S = require '../settings'
 _ = require 'lodash'
 require '../helpers'
+
 class Signal
 	constructor: (@i) ->
 		@count = 0
 		@green = true
 		@id = _.uniqueId 'signal-'
 		@reset()
-
-	# set_offset: (@offset)->
-	# 	@reset()
 
 	@property 'offset', 
 		get: -> 

@@ -6,5 +6,8 @@ svg.chart(ng-attr-width='{{::vm.width+vm.m.l+vm.m.r}}' ng-attr-height='{{::vm.he
 			text(ng-attr-x='{{vm.width/2}}' y='35') Time
 		g(ver-axis fun='vm.verAxis' )
 			text(x='5' y='12') Cum. Veh.'s
-		path.en(ng-attr-d='{{vm.en()}}')
-		path.ex(ng-attr-d='{{vm.ex()}}')
+		path.en
+		path.ex
+		//- g.g-circles
+		//- 	circle.en(ng-repeat='d in vm.data track by d.id' r='2' shifter='[vm.hor(d.t),vm.ver(d.EN)]')
+		//- 	circle.ex(ng-repeat='d in vm.data track by d.id' r='2' shifter='[vm.hor(d.t),vm.ver(d.EX)]')

@@ -4,21 +4,21 @@ _ = require 'lodash'
 class Settings
 	constructor:->
 		_.assign this,
-			num_cars: 1500
+			num_cars: 500
 			time: 0
 			space: 4
 			pace: 1
 			distance: 90
-			sample: 30
+			sample: 200
 			beta: .5
 			gamma: 2
 			offset: 0
-			rush_length: 600
+			rush_length: 500
 			num_cells: 1000
-			phase: 50
+			cycle: 30
 			green: .5
 			wish: 400
-			num_signals: 20
+			num_signals: 60
 			day: 0
 			offset: .3
 

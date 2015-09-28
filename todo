@@ -2,3 +2,5 @@ TODAY
 -new way of choices
 -do the ticks on the cells, not this time thing
 -show costs somehow
+-do the offsets with the setters/getters
+-plot at the end of day only

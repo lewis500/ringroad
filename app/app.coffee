@@ -31,6 +31,7 @@ class Ctrl
 
 	day_end: ->
 		@traffic.day_end @cars
+		@scope.$broadcast 'dayend'
 		setTimeout => @day_start @cars
 
 	click: (val) -> if !val then @play()
@@ -40,15 +41,7 @@ class Ctrl
 				if @traffic.done()
 					@day_end @cars
 					return true
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
-				@traffic.tick()
+				@traffic.tick() for i in [0...75]
 
 				@scope.$evalAsync()
 				@paused
@@ -65,32 +58,32 @@ visDer = ->
 		templateUrl: './dist/vis.html'
 		controller: ['$scope', '$element', Ctrl]
 
-leaver = ->
-	animate = 
-		leave: (el)->
-			d3.select el[0]
-				.select 'rect'
-				.transition()
-				.duration 50
-				.ease 'cubic'
-				.attr 'transform','scale(1.2,1)'
-				.attr 'fill','#eee'
-				.transition()
-				.duration 150
-				.ease 'cubic'
-				.attr 'transform','scale(0,1)'
-		enter: (el)->
-			d3.select el[0]
-				.select 'rect'
-				.attr 'transform','scale(0,.5)'
-				.transition()
-				.duration 60
-				.ease 'cubic'
-				.attr 'transform','scale(1.2,1)'
-				.transition()
-				.duration 150
-				.ease 'cubic'
-				.attr 'transform','scale(1)'
+# leaver = ->
+# 	animate = 
+# 		leave: (el)->
+# 			d3.select el[0]
+# 				.select 'rect'
+# 				.transition()
+# 				.duration 50
+# 				.ease 'cubic'
+# 				.attr 'transform','scale(1.2,1)'
+# 				.attr 'fill','#eee'
+# 				.transition()
+# 				.duration 150
+# 				.ease 'cubic'
+# 				.attr 'transform','scale(0,1)'
+# 		enter: (el)->
+# 			d3.select el[0]
+# 				.select 'rect'
+# 				.attr 'transform','scale(0,.5)'
+# 				.transition()
+# 				.duration 60
+# 				.ease 'cubic'
+# 				.attr 'transform','scale(1.2,1)'
+# 				.transition()
+# 				.duration 150
+# 				.ease 'cubic'
+# 				.attr 'transform','scale(1)'
 
 angular.module 'mainApp' , [require 'angular-material' , require 'angular-animate']
 	.directive 'visDer', visDer
@@ -103,3 +96,4 @@ angular.module 'mainApp' , [require 'angular-material' , require 'angular-animat
 	# .animation '.signal', signalAn
 	# .animation '.g-car', leaver
 	.directive 'sliderDer', require './directives/slider'
+	.directive 'shifter',require './directives/shifter'

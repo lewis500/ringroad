@@ -35,7 +35,6 @@ class Ctrl
 			.orient 'left'
 
 	d: -> @line @memory
-
 	
 der = ->
 	directive = 
@@ -43,7 +42,6 @@ der = ->
 		controllerAs: 'vm'
 		scope: 
 			memory: '='
-			# theory: '='
 		templateUrl: './dist/mfdChart.html'
 		controller: ['$scope', '$element', Ctrl]
 

@@ -6823,8 +6823,6 @@ input[type="number"] {
 }
 .signal.red {
   fill: #ef5350;
-  transform: scale(1.2);
-  transition: transform 0.2s ease-in-out;
 }
 .road {
   fill: none;
@@ -6853,6 +6851,12 @@ rect.bg {
 }
 .en {
   stroke: #e91e63;
+}
+circle.en {
+  fill: #e91e63;
+}
+circle.ex {
+  fill: #03a9f4;
 }
 .flow {
   stroke: #4caf50;

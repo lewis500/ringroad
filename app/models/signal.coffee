@@ -1,6 +1,5 @@
 S = require '../settings'
 _ = require 'lodash'
-require '../helpers'
 
 class Signal
 	constructor: (@i) ->
@@ -9,19 +8,15 @@ class Signal
 		@id = _.uniqueId 'signal-'
 		@reset()
 
-	@property 'offset', 
-		get: -> 
-			S.phase*((@i*S.offset)%1)
-
 	reset: ->
+		@offset = S.cycle*((@i*S.offset)%1)
 		[@count, @green] = [@offset, true]
 
 	tick: ->
 		@count++
-		if (@count) >= (S.phase)
+		if @count > S.cycle
 			[@count, @green] = [0, true]
-			return
-		if (@count)>= (S.green*S.phase)
+		if (@count)>=(S.green*S.cycle)
 			@green = false
 
 module.exports = Signal

@@ -2,7 +2,7 @@ div(layout='row')
 	md-switch(flex='20' ng-model='vm.paused' ng-change='vm.click(vm.paused)') {{vm.paused? 'Paused' : 'Play'}}
 	div(layout='column' flex)
 		slider-der(flex min= '2' max='60' step='1' label='# signals' my-data='S.num_signals')
-		slider-der(flex min= '10' max='200' step='1' label='phase length' my-data='S.phase')
+		slider-der(flex min= '10' max='200' step='1' label='cycle length' my-data='S.cycle')
 		slider-der(flex min= '.1' max='1' step='.1' label='%green' my-data='S.green')
 
 		div(layout flex)
@@ -14,17 +14,17 @@ div(layout='row')
 
 svg.vis(version="1.1" baseProfile="basic" x="0" y="0" viewBox="0 0 110 110")
 	g.g-main(transform='translate(55,55)')
-		text.label time: {{S.time}}
+		//- text.label time: {{S.time}}
 		text.label(y='1em') day: {{S.day}}
 		circle.road(r='50')
 		//- g.gradient
 		//- 	circle(r='1' cy='45' ng-repeat='n in vm.pal' ng-attr-fill='{{::S.colors(n)}}' ng-attr-transform='rotate({{::S.scale(n)}})')
-		g.cars
+		//- g.cars
 			g.g-car(ng-repeat='car in vm.traffic.traveling track by car.id' ng-attr-transform='{{vm.rotator(car)}}')
 				rect.car( width='.5' height='2' y='-1' x='-.25' ng-attr-fill='{{::car.color}}')
-		g.signals
+		//- g.signals
 			g.g-signal(ng-repeat='s in vm.traffic.signals track by s.id' d3-der='{transform: vm.rotator(s) }' )
 				rect.signal(width='.5' height='5' y='-2' x='-.25' ng-class='{"red": (!s.green)}')
 
-//- cum-chart(rate='vm.traffic.memory.long_term')
-mfd-chart(memory='vm.traffic.memory.long_term')
+cum-chart(data='vm.traffic.memory.long_term')
+//- mfd-chart(memory='vm.traffic.memory.long_term')

@@ -1,39 +1,45 @@
 S = require '../settings'
 _ = require 'lodash'
-console.log 'hello'
 
 class Cell
 	constructor: (@loc)->
-		@last = -Infinity
-		@temp_car = false
+		@been_free = Infinity
+		@temp_car = @car = false
 		@id = _.uniqueId 'cell'
+		@signal = undefined
 
 	set_signal: (@signal)->
 		@signal.loc = @loc
+		@signal.cell = this
 
 	clear_signal: ->
 		@signal = undefined
 
-	space: 4
-
 	receive:(car)->
 		car.set_loc @loc
-		@last = S.time
 		@temp_car = car
+		@been_free = 0
 		car.cell = this
 
+	reset: ->
+		@been_free = Infinity
+		@temp_car = @car = false
+
 	remove: ->
-		@temp_car = false
+		@been_free = 1
+		@temp_car = @car = false
 
 	finalize: ->
-		@signal?.tick()
-		if (@car=@temp_car)
-			@last = S.time
+		@car = @temp_car
+		if !!@car
+			@been_free=0
+		else
+			@been_free++
 
 	is_free: ->
 		if @signal
-			@signal.green and (S.time-@last)>@space
+			return @signal.green and @been_free>S.space
 		else
-			(S.time-@last)>@space
+			@been_free>S.space
 
 module.exports = Cell
